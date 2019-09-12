@@ -1,0 +1,11 @@
+.region-manage {
+  //   height: 100%;
+  //   width: 100%;
+  //   padding: 32px;
+  .ant-card {
+    height: 100%;
+    .ant-card-body {
+      height: calc(100% - 65px);
+    }
+  }
+}

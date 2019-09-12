@@ -1,0 +1,35 @@
+<div class="project-statistics page-container">
+    <div nz-row nzGutter="16" style="margin-bottom: 20px;">
+        <div nz-col class="gutter-row" nzSpan="12">
+            <nz-card nzTitle="BIM项目各阶段数量">
+                <nz-spin [nzSpinning]="stageLoading">
+                    <div echarts style="height: 280px" [options]="stageOption" class="demo-chart">
+                    </div>
+                </nz-spin>
+            </nz-card>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="12">
+            <nz-card nzTitle="BIM项目类型百分比">
+                <nz-spin [nzSpinning]="typeLoading">
+                    <div echarts style="height: 280px" [options]="typeOption" class="demo-chart"></div>
+                </nz-spin>
+            </nz-card>
+        </div>
+    </div>
+    <div nz-row nzGutter="16">
+        <div nz-col class="gutter-row" nzSpan="12">
+            <nz-card nzTitle="BIM项目近12个月统计情况">
+                <nz-spin [nzSpinning]="statisticsLoading">
+                    <div echarts style="height: 280px" [options]="statisticsOption" class="demo-chart"></div>
+                </nz-spin>
+            </nz-card>
+        </div>
+        <div nz-col class="gutter-row" nzSpan="12">
+            <nz-card nzTitle="各区县项目应用报建情况">
+                <nz-spin [nzSpinning]="reportLoading">
+                    <div echarts style="height: 280px" [options]="reportOption" class="demo-chart"></div>
+                </nz-spin>
+            </nz-card>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,86 @@
+<div class="role-manage page-container">
+    <!-- 表格 -->
+    <nz-card [nzTitle]="topTemplate" [nzActions]="[bottomTemplate]">
+        <nz-table #rowSelectionTable nzSize="middle" [nzData]="tableList" [nzShowPagination]="false"
+            (nzCurrentPageDataChange)="currentPageDataChange($event)">
+            <thead>
+                <tr>
+                    <th nzShowCheckbox [(nzChecked)]="isAllDisplayDataChecked" [nzIndeterminate]="isIndeterminate"
+                        (nzCheckedChange)="checkAll($event)"></th>
+                    <!-- <th>角色编号</th> -->
+                    <th>名称</th>
+                    <th>描述</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of rowSelectionTable.data">
+                    <td nzShowCheckbox [(nzChecked)]="mapOfCheckedId[data.id]" (nzCheckedChange)="refreshStatus()"></td>
+                    <!-- <td>{{ data.id }}</td> -->
+                    <td>{{ data.displayName }}</td>
+                    <td>{{ data.description }}</td>
+                    <td class="table-action">
+                        <i (click)="setting(data)" title="设置角色" nz-icon nzType="setting" nzTheme="outline"></i>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <i (click)="editRole(data)" title="编辑角色" [z-acl]="'Pages.Administration.Roles.Edit'" nz-icon nzType="edit" nzTheme="outline"></i>
+                        <ng-container *ngIf="data.name.slice(0, 6) !== 'SYSTEM'" [z-acl]="'Pages.Administration.Roles.Delete'">
+                            <nz-divider nzType="vertical"></nz-divider>
+                            <i (click)="removeRole(data)" title="删除角色" nz-icon nzType="delete" nzTheme="outline"></i>
+                        </ng-container>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+    <ng-template #topTemplate>
+        <div class="role-manage-tool">
+            <nz-input-group nzSearch nzSize="middle" [nzAddOnAfter]="suffixButton">
+                <input type="text" [(ngModel)]="listForm.Filter" nz-input placeholder="请输入关键字" (keyup)="keyupEvent($event)" />
+            </nz-input-group>
+            <ng-template #suffixButton>
+                <button (click)="searchItem()" nz-button nzType="primary" nzSize="middle" nzSearch>搜索</button>
+            </ng-template>
+            <button [z-acl]="'Pages.Administration.Roles.Create'" (click)="isAddModal=true" nz-button nzType="primary" style="margin-left: 20px;">新增</button>
+        </div>
+    </ng-template>
+    <ng-template #bottomTemplate>
+        <div class="pager">
+            <nz-pagination [(nzPageIndex)]="pageIndex" [(nzPageSize)]="listForm.MaxResultCount" [(nzTotal)]="listForm.nzTotal"
+                (nzPageIndexChange)="pageChange($event)" nzShowQuickJumper [nzShowTotal]="totalTemplate">
+            </nz-pagination>
+            <ng-template #totalTemplate let-total>
+                共{{listForm.nzTotal}}条
+            </ng-template>
+        </div>
+    </ng-template>
+</div>
+
+<!-- 弹出框（新增，修改） -->
+<nz-modal class="role-manage-modal" [(nzVisible)]="isAddModal" nzTitle="新增/编辑角色" (nzOnCancel)="resetModalForm()" (nzOnOk)="handleAddOk()"
+    nzWidth="800">
+    <form nz-form [formGroup]="validateAddForm">
+        <nz-form-item>
+            <nz-form-label nzRequired [nzSpan]="4">名称</nz-form-label>
+            <nz-form-control nzHasFeedback [nzSpan]="18" nzErrorTip="请输入名称">
+                <input nz-input formControlName="displayName" maxlength="50" required />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="4">描述</nz-form-label>
+            <nz-form-control [nzSpan]="18">
+                <textarea maxlength="50" rows="4" nz-col nzSpan="20" maxlength="100" nz-input placeholder="请输入描述"
+                    formControlName="description"></textarea>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+    <nz-card nzTitle="企业级权限分配">
+        <div *ngFor="let data of showPermissionList">
+            <nz-divider [nzText]="data.text" nzOrientation="left" style="font-size: 15px;font-weight: bold"></nz-divider>
+            <div>
+                <nz-checkbox-group [nzDisabled]="!cantModify" [(ngModel)]="data.group"
+                    (ngModelChange)="setCheckPermissionList()">
+                </nz-checkbox-group>
+            </div>
+        </div>
+    </nz-card>
+</nz-modal>

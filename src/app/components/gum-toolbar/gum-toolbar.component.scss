@@ -1,0 +1,287 @@
+.archgl-gum-toolbar {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &.archgl-gum-toolbar-3d {
+        .gum-tlbr-group {
+            background-color: #2e2e2e;
+            border: solid 1px #2e2e2e;
+        }
+    }
+
+    .gum-tlbr-group {
+        margin: 0px 5px;
+        display: flex;
+        background-color: #ffffff;
+        border-radius: 5px;
+        border: solid 1px #cccccc;
+        box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+
+        .gum-tlbr-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            color: #333;
+            width: 40px;
+            height: 40px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+    }
+}
+
+
+
+.gum-tlbr-item {
+
+    .back {
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    .d3-home {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_home_nor.png);
+    }
+
+    .d3-move {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_pingyi_nor.png);
+    }
+
+    .d3-scale {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_max_nor.png);
+    }
+
+    .d3-fullscreen {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_quanping_nor.png);
+    }
+
+    .d3-fullscreen-exit {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_exit_nor.png);
+    }
+
+    .d3-region {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_kuangxuan_nor.png);
+    }
+
+    .d3-clipping {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_pouqie_nor.png);
+    }
+
+    .d3-explode {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_baoza_nor.png);
+    }
+
+    .d3-zoomwin {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_suofangchuangkou_nor.png);
+    }
+
+    .d3-peel {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_boli_nor.png);
+    }
+
+    .d3-hidden {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_hide_nor.png);
+    }
+
+    .d3-measure {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_measure_nor.png);
+    }
+
+    .d3-wander {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_manyou_nor.png);
+    }
+    .d3-bind {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_bind_nor.png);
+    }
+    .d3-unbind {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_unbind_nor.png);
+    }
+    .d3-openGantt {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_4d_nor.png);
+    }
+    .d3-openEdit {
+        background-image: url(../../../assets/images/model-control/tlb2d/model_icon_edit_nor.png);
+    }
+
+    .gum-icon-svg {
+        font-size: 22px;
+        display: inline-block;
+        color: inherit;
+        font-style: normal;
+        line-height: 0;
+        text-align: center;
+        text-transform: none;
+        vertical-align: -0.125em;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        transition: 0.3s;
+    }
+
+    &:hover,
+    &.active {
+
+        .anticon,
+        .gum-icon-svg {
+            color: #02d6dc;
+        }
+
+        .d3-home {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_home_sel.png);
+        }
+
+        .d3-move {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_pingyi_sel.png);
+        }
+
+        .d3-scale {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_max_sel.png);
+        }
+
+        .d3-fullscreen {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_quanping_sel.png);
+        }
+
+        .d3-fullscreen-exit {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_exit_sel.png);
+        }
+
+        .d3-region {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_kuangxuan_sel.png);
+        }
+
+        .d3-clipping {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_pouqie_sel.png);
+        }
+
+        .d3-explode {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_baoza_sel.png);
+        }
+
+        .d3-zoomwin {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_suofangchuangkou_sel.png);
+        }
+
+        .d3-peel {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_boli_sel.png);
+        }
+
+        .d3-hidden {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_hide_sel.png);
+        }
+
+        .d3-measure {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_measure_sel.png);
+        }
+
+        .d3-wander {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_manyou_sel.png);
+        }
+        .d3-bind {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_bind_sel.png);
+        }
+        .d3-unbind {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_unbind_sel.png);
+        }
+        .d3-closeGantt {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_4d_sel.png);
+        }
+        .d3-openEdit {
+            background-image: url(../../../assets/images/model-control/tlb2d/model_icon_edit_sel.png);
+        }
+    }
+}
+
+.setting {
+    padding: 10px;
+
+    .setting-title {
+        font-family: Microsoft YaHei;
+        font-size: 14px;
+        color: #333333;
+        margin: 10px 0px;
+        line-height: 30px;
+    }
+
+    .setting-color-line {
+        display: flex;
+        line-height: 30px;
+
+        .name {
+            font-size: 14px;
+            color: #666666;
+            width: 60px;
+        }
+
+        .value {
+            .color-point {
+                width: 18px;
+                height: 18px;
+                border-radius: 9px;
+                margin-right: 10px;
+                display: inline-block;
+                box-shadow: 2px 2px 2px #888;
+                cursor: pointer;
+                padding: 2px;
+
+                >div {
+                    width: 100%;
+                    height: 100%;
+                    position: relative;
+                    border-radius: 7px;
+                }
+            }
+
+            .color-point-active {
+                border: 1px solid #02d6dc;
+            }
+        }
+    }
+
+    .setting-unit-line {
+        .btn-radio {
+            display: block;
+            line-height: 30px;
+        }
+    }
+
+
+}
+
+
+.archgl-gum-mk2-text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 20000;
+    top: 0px;
+    left: 0px;
+
+    .mk2-mask {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 20000;
+        top: 0px;
+        left: 0px;
+    }
+
+    .mk2-input {
+        position: absolute;
+        width: 250px;
+        z-index: 20001;
+        // box-shadow: 1px 1px 4px #888;
+
+        .anticon {
+            color: #02d6dc;
+            cursor: pointer;
+        }
+    }
+
+}

@@ -1,0 +1,107 @@
+@import "../../../sass/base.scss";
+
+.project-scenes {
+  overflow: auto;
+  ::ng-deep .project-scenes-card-container {
+    height: 100%;
+    > .ant-card-body {
+      height: calc(100% - 61px);
+    }
+  }
+  .project-scenes-tools {
+    margin-bottom: 20px;
+  }
+  .pager {
+    text-align: center;
+  }
+  ::ng-deep .ant-empty {
+    margin-top: 15%;
+  }
+  ::ng-deep .project-scenes-list .ant-card {
+    box-shadow: none;
+    transition: all 0.2s linear;
+    &:hover {
+      transform: translate3d(0, -2px, 0);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    .ant-card-actions span,
+    .ant-card-actions i {
+      width: 100%;
+    }
+  }
+  .card-item {
+    margin-bottom: 20px;
+    ::ng-deep .ant-card-body {
+      color: #999;
+    }
+    img {
+      height: 200px;
+    }
+    .card-item-name {
+      font-size: 16px;
+      color: #000;
+    }
+    .card-item-name,
+    .card-item-user {
+      margin-bottom: 10px;
+    }
+    .card-item-name,
+    .card-item-user,
+    .card-item-time {
+      @include text-overflow();
+    }
+  }
+}
+
+.modal-group-add {
+  .modal {
+    height: 55px;
+    .modal-left {
+      line-height: 32px;
+    }
+  }
+  .modal-text {
+    height: 110px;
+    .modal-left {
+      line-height: 32px;
+    }
+    .upload {
+      height: 100px;
+      width: 100px;
+      border: 1px solid #e5e5e5;
+      cursor: pointer;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      border-radius: 4px;
+      &:hover {
+        border-color: $PrimaryColor;
+        .top {
+          color: $PrimaryColor;
+        }
+        .bottom {
+          color: $PrimaryColor;
+        }
+      }
+      .top {
+        height: 50px;
+        font-size: 30px;
+        line-height: 60px;
+        text-align: center;
+        color: #969696;
+      }
+      .bottom {
+        height: 50px;
+        text-align: center;
+        line-height: 35px;
+        color: #969696;
+      }
+    }
+  }
+}
+
+.model-review-list {
+  .overflow {
+    width: 200px;
+    @include text-overflow();
+  }
+}

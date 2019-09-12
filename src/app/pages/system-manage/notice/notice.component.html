@@ -1,0 +1,94 @@
+<div class="notice page-container">
+    <!-- 表格 -->
+    <nz-card style="width:100%;" [nzTitle]="topTemplate" [nzActions]="[bottomTemplate]">
+        <nz-table #basicTable [nzData]="tableInfo" nzShowPagination="false">
+            <thead>
+                <tr>
+                    <th>标题</th>
+                    <th>发布人</th>
+                    <th>状态</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data">
+                    <td><span class="text-underline" (click)="QueryDetailById(data)">{{data.title}}</span></td>
+                    <td>{{data.creatorUserName}}</td>
+                    <td>
+                        <nz-switch *ngIf="isAdminUser" [ngModel]="data.status === 1 ? true : false"
+                            nzCheckedChildren="显示" nzUnCheckedChildren="隐藏" (ngModelChange)="statusChange(data)">
+                        </nz-switch>
+                        <span *ngIf="!isAdminUser"
+                            [ngClass]="{'color': data.status === 1 ? '#a3a3a3' : 'red'}">{{data.status === 1 ? '已读' : '未读'}}</span>
+                    </td>
+                    <td>{{data.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+                    <td class="table-action">
+                        <i (click)="removeNotice(data)" nz-icon nzType="delete" nzTheme="outline"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+    <ng-template #topTemplate>
+        <div class="notice-tool">
+            <nz-input-group nzSearch nzSize="middle" [nzAddOnAfter]="suffixButton">
+                <input type="text" [(ngModel)]="listForm.Filter" nz-input placeholder="请输入关键字" (keyup)="keyupEvent($event)"/>
+            </nz-input-group>
+            <ng-template #suffixButton>
+                <button (click)="searchItem()" nz-button nzType="primary" nzSize="middle" nzSearch>搜索</button>
+            </ng-template>
+            <button (click)="isAddVisible=true" nz-button nzType="primary" style="margin-left: 20px;">新增</button>
+        </div>
+    </ng-template>
+    <ng-template #bottomTemplate>
+        <div class="pager">
+            <nz-pagination [(nzPageIndex)]="pageIndex" [(nzPageSize)]="listForm.MaxResultCount" [(nzTotal)]="listForm.nzTotal"
+                (nzPageIndexChange)="pageChange($event)" nzShowQuickJumper [nzShowTotal]="totalTemplate">
+            </nz-pagination>
+            <ng-template #totalTemplate let-total>
+                共{{listForm.nzTotal}}条
+            </ng-template>
+        </div>
+    </ng-template>
+</div>
+
+<!-- 发布 -->
+<nz-modal [(nzVisible)]="isAddVisible" nzTitle="发布公告" (nzOnCancel)="isAddVisible=false" (nzOnOk)="handleAddOk()">
+    <form nz-form [formGroup]="validateForm">
+        <nz-form-item>
+            <nz-form-label nzRequired [nzSpan]="4">标题</nz-form-label>
+            <nz-form-control nzHasFeedback [nzSpan]="20" nzErrorTip="标题不能为空">
+                <input nz-input formControlName="title" name="title" required />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired [nzSpan]="4">内容</nz-form-label>
+            <nz-form-control [nzSpan]="20" nzErrorTip="内容不能为空">
+                <textarea rows="4" nz-col nzSpan="20" nz-input formControlName="content" name="content"
+                    required></textarea>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired [nzSpan]="4">推送人员</nz-form-label>
+            <nz-form-control nzHasFeedback [nzSpan]="20" nzErrorTip="推送人员不能为空">
+                <nz-select nzPlaceHolder="组织结构选取" nzShowSearch required formControlName="organizationUnitId"
+                    name="organizationUnitId">
+                    <nz-option *ngFor="let item of departmentList" [nzValue]="item.id" [nzLabel]="item.displayName">
+                    </nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</nz-modal>
+
+<!-- 详情 -->
+<nz-modal class="notice-detail" [(nzVisible)]="isDetailVisible" nzTitle="详情" (nzOnCancel)="isDetailVisible=false"
+    [nzFooter]="null" nzWidth="800px">
+    <div class="detail-title">{{tableDetailInfo.title}}</div>
+    <div class="detail-subtitle">
+        <span style="margin-right: 100px;">发布人：{{tableDetailInfo.creatorUserName}}</span>
+        <span>发布时间：{{tableDetailInfo.creationTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+    </div>
+    <div class="detail-content">{{tableDetailInfo.content}}</div>
+</nz-modal>

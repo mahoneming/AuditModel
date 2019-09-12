@@ -1,0 +1,73 @@
+<div class="department-manage page-container">
+    <!-- 顶部搜索条件 -->
+    <!-- 表格 -->
+    <nz-card [nzTitle]="topTemplate">
+        <nz-table #expandTable [nzData]="listOfMapData" [nzFrontPagination]="false">
+            <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>描述</th>
+                    <th>人数(人)</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let data of expandTable.data">
+                    <ng-container *ngFor="let item of mapOfExpandedData[data.key]">
+                        <tr *ngIf="(item.parent && item.parent.expand) || !item.parent">
+                            <td [nzIndentSize]="item.level * 20" [nzShowExpand]="!!item.children"
+                                [(nzExpand)]="item.expand"
+                                (nzExpandChange)="collapse(mapOfExpandedData[data.key], item, $event)">
+                                {{ item.displayName }}
+                            </td>
+                            <td>{{ item.description }}</td>
+                            <td>{{ item.memberCount }}</td>
+                            <td class="table-action">
+                                <i (click)="addDepartChild(item)" title="新增节点" nz-icon nzType="usergroup-add"
+                                    nzTheme="outline"></i>
+                                <nz-divider nzType="vertical"></nz-divider>
+                                <i (click)="editDepart(item)" title="编辑" nz-icon nzType="edit" nzTheme="outline"></i>
+                                <ng-container *ngIf="item.primaryId.slice(0, 24) !== '00000000-0000-0000-0000-'">
+                                    <nz-divider nzType="vertical"></nz-divider>
+                                    <i (click)="removeDepart(item)" title="删除" nz-icon nzType="delete"
+                                        nzTheme="outline"></i>
+                                </ng-container>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            </tbody>
+        </nz-table>
+        <!-- <div class="pager">
+            <nz-pagination [(nzPageIndex)]="listForm.SkipCount" [(nzPageSize)]="listForm.MaxResultCount"
+                [(nzTotal)]="listForm.nzTotal" (nzPageIndexChange)="pageChange($event)" nzShowQuickJumper
+                [nzShowTotal]="totalTemplate"></nz-pagination>
+            <ng-template #totalTemplate let-total>
+                共{{nzTotal}}条
+            </ng-template>
+        </div> -->
+    </nz-card>
+    <ng-template #topTemplate>
+        <button (click)="addDepartParent()" nz-button nzType="primary">新增部门</button>
+        <!-- <button nz-button nzType="primary">导入</button>
+        <button nz-button nzType="primary">导出</button> -->
+    </ng-template>
+</div>
+
+<!-- 弹出框（新增，修改） -->
+<nz-modal [(nzVisible)]="isAddModal" nzTitle="新增/编辑部门" (nzOnCancel)="resetModalForm()" (nzOnOk)="submitForm()">
+    <form nz-form [formGroup]="validateForm">
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>名称</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入名称">
+                <input maxlength="50" formControlName="displayName" nz-input placeholder="" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24">描述</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入描述">
+                <textarea maxlength="100" formControlName="description" nz-input placeholder=""></textarea>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</nz-modal>

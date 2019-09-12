@@ -1,0 +1,210 @@
+<div [ngStyle]='gumStyle'>
+  <div class='archgl-gum-toolbar' *ngIf='gumType === "2d"'>
+    <div class='gum-tlbr-group'>
+      <div class='gum-tlbr-item' (click)='home()'>
+        <i class='gum-icon-svg'>
+          <svg class="svg-icon" width="1em" height="1em" viewBox="0 0 24 24">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink"
+              xlink:href="../../../assets/images/model-control/tlb2d/gum-icon.svg#home" />
+          </svg>
+        </i>
+      </div>
+    </div>
+    <div class='gum-tlbr-group' *ngIf='markCfg && markCfg.length > 0'>
+      <div class='gum-tlbr-item' *ngFor='let markItem of markCfg'
+        [ngClass]='{"active": currMarkMode === markItem.value}'>
+        <i class='gum-icon-svg' [title]='markItem.label' (click)='switchMark(markItem.value)'>
+          <svg class="svg-icon" width="1em" height="1em" viewBox="0 0 24 24">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink"
+              attr.xlink:href="{{'../../../assets/images/model-control/tlb2d/gum-icon.svg#' + markItem.class}}" />
+          </svg>
+        </i>
+      </div>
+    </div>
+    <div class='gum-tlbr-group'>
+      <div class='gum-tlbr-item' *ngFor='let msItem of measureCfg' [ngClass]='{"active": currMsMode === msItem.value}'>
+        <i class='gum-icon-svg' [title]='msItem.label' (click)='switchMeasure(msItem.value)'>
+          <svg class="svg-icon" width="1em" height="1em" viewBox="0 0 24 24">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink"
+              attr.xlink:href="{{'../../../assets/images/model-control/tlb2d/gum-icon.svg#' + msItem.class}}" />
+          </svg>
+        </i>
+      </div>
+    </div>
+    <div class='gum-tlbr-group'>
+      <div class='gum-tlbr-item' (click)='rotate2d("cw")'>
+        <i class='gum-icon-svg'>
+          <svg class="svg-icon" width="1em" height="1em" viewBox="0 0 24 24">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink"
+              xlink:href="../../../assets/images/model-control/tlb2d/gum-icon.svg#rotation-cw" />
+          </svg>
+        </i>
+      </div>
+      <div class='gum-tlbr-item' (click)='rotate2d("antiCw")'>
+        <i class='gum-icon-svg'>
+          <svg class="svg-icon" width="1em" height="1em" viewBox="0 0 24 24">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink"
+              xlink:href="../../../assets/images/model-control/tlb2d/gum-icon.svg#rotation-anticw" />
+          </svg>
+        </i>
+      </div>
+      <!-- <div class='gum-tlbr-item' nz-popover [nzContent]="settingTmpl" nzPlacement="top">
+        <i class='gum-icon-svg'>
+          <svg class="svg-icon" width="1em" height="1em" viewBox="0 0 24 24">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink"
+              xlink:href="../../../assets/images/model-control/tlb2d/gum-icon.svg#setting" />
+          </svg>
+        </i>
+      </div> -->
+    </div>
+    <!-- <div class='gum-tlbr-group'>
+      <div class='gum-tlbr-item' *ngIf='!isFullScreen' (click)='switchFullScreen()'>
+        <i class='gum-icon-svg'>
+          <svg class="svg-icon" width="1em" height="1em" viewBox="0 0 24 24">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink"
+              xlink:href="../../../assets/images/model-control/tlb2d/gum-icon.svg#fullscreen" />
+          </svg>
+        </i>
+      </div>
+      <div class='gum-tlbr-item' *ngIf='isFullScreen' (click)='switchFullScreen()'>
+        <i class='gum-icon-svg'>
+          <svg class="svg-icon" width="1em" height="1em" viewBox="0 0 24 24">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink"
+              xlink:href="../../../assets/images/model-control/tlb2d/gum-icon.svg#fullscreen-exit" />
+          </svg>
+        </i>
+      </div>
+    </div> -->
+  </div>
+
+  <div class='archgl-gum-toolbar archgl-gum-toolbar-3d' *ngIf='gumType === "3d"'>
+    <div class='gum-tlbr-group'>
+      <div class='gum-tlbr-item' nz-tooltip nzTitle="home" (click)='home()'>
+        <div class='back d3-home'></div>
+      </div>
+      <div class='gum-tlbr-item' nz-tooltip nzTitle="平移" (click)='cmd3d("move")'
+        [ngClass]='{"active": d3State === "move"}'>
+        <div class='back d3-move'></div>
+      </div>
+      <div class='gum-tlbr-item' nz-tooltip nzTitle="缩放" (click)='cmd3d("scale")'
+        [ngClass]='{"active": d3State === "scale"}'>
+        <div class='back d3-scale'></div>
+      </div>
+      <div class='gum-tlbr-item' *ngIf='!isFullScreen' nz-tooltip nzTitle="全屏" (click)='switchFullScreen()'>
+        <div class='back d3-fullscreen'></div>
+      </div>
+      <div class='gum-tlbr-item' *ngIf='isFullScreen' nz-tooltip nzTitle="退出全屏" (click)='switchFullScreen()'>
+        <div class='back d3-fullscreen-exit'></div>
+      </div>
+    </div>
+    <div class='gum-tlbr-group'>
+      <div class='gum-tlbr-item' nz-tooltip nzTitle="框选" (click)='cmd3d("region")'
+        [ngClass]='{"active": d3State === "region"}'>
+        <div class='back d3-region'></div>
+      </div>
+      <div class='gum-tlbr-item' nz-tooltip nzTitle="剖切" (click)='cmd3d("clipping")'
+        [ngClass]='{"active": d3State === "clipping"}'>
+        <div class='back d3-clipping'></div>
+      </div>
+      <div class='gum-tlbr-item' nz-tooltip nzTitle="分解" (click)='cmd3d("explode")'
+        [ngClass]='{"active": d3State === "explode"}'>
+        <div class='back d3-explode'></div>
+      </div>
+      <div class='gum-tlbr-item' nz-tooltip nzTitle="缩放窗口" (click)='cmd3d("zoomwin")'
+        [ngClass]='{"active": d3State === "zoomwin"}'>
+        <div class='back d3-zoomwin'></div>
+      </div>
+      <div class='gum-tlbr-item' nz-tooltip nzTitle="剥离" (click)='cmd3d("peel")'>
+        <div class='back d3-peel'></div>
+      </div>
+      <div class='gum-tlbr-item' nz-tooltip nzTitle="隐藏" (click)='cmd3d("hidden")'>
+        <div class='back d3-hidden'></div>
+      </div>
+      <div class='gum-tlbr-item' nz-tooltip nzTitle="测量" (click)='cmd3d("measure")'
+        [ngClass]='{"active": d3State === "measure"}'>
+        <div class='back d3-measure'></div>
+      </div>
+      <div class='gum-tlbr-item' nz-tooltip nzTitle="漫游" (click)='cmd3d("wander")'
+        [ngClass]='{"active": d3State === "wander"}'>
+        <div class='back d3-wander'></div>
+      </div>
+    </div>
+    <!-- <div class='gum-tlbr-group'>
+
+    </div> -->
+    <!-- 绑定解绑 -->
+    <div class='gum-tlbr-group'>
+      <!-- <div class='gum-tlbr-item' nz-tooltip nzTitle="绑定" (click)='bind("bind")'
+        [ngClass]='{"active": d3State === "bind"}'>
+        <div class='back d3-bind'></div>
+      </div>
+      <div class='gum-tlbr-item' nz-tooltip nzTitle="解绑" (click)='unbind("unbind")'
+        [ngClass]='{"active": d3State === "unbind"}'>
+        <div class='back d3-unbind'></div>
+      </div> -->
+      <div class='gum-tlbr-item' nz-tooltip nzTitle="甘特图" (click)='openGantt()'>
+        <div class='back d3-openGantt'></div>
+      </div>
+      <!-- <div class='gum-tlbr-item' nz-tooltip nzTitle="检验批编辑模式" (click)='openEdit()'
+        [ngClass]='{"active": editState === "openEdit"}'>
+        <div class='back d3-openEdit'></div>
+      </div> -->
+
+      <!-- <div class='gum-tlbr-item'  *ngIf='isGantt' nz-tooltip nzTitle="closeGantt" (click)='openGantt()'>
+        <div class='back d3-closeGantt'></div>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<ng-template #settingTmpl>
+  <div class='setting'>
+    <div class='setting-title'>颜色</div>
+    <div class='setting-color-line'>
+      <div class='name'>背景色：</div>
+      <div class='value'>
+        <nz-radio-group [(ngModel)]="setting.backColor" (ngModelChange)='colorChange("back")'>
+          <label *ngFor='let unitItem of backColorCfg' nz-radio [nzValue]='unitItem.value'>{{unitItem.label}}</label>
+        </nz-radio-group>
+      </div>
+    </div>
+    <div class='setting-color-line'>
+      <div class='name'>前景色：</div>
+      <div class='value'>
+        <nz-radio-group [(ngModel)]="setting.FrontColor" (ngModelChange)='colorChange("front")'>
+          <label *ngFor='let unitItem of frontColorCfg' nz-radio [nzValue]='unitItem.value'>{{unitItem.label}}</label>
+        </nz-radio-group>
+      </div>
+    </div>
+    <div class='setting-color-line'>
+      <div class='name'>批注色：</div>
+      <div class='value'>
+        <div *ngFor='let markColor of markColorCfg' class='color-point'
+          [ngClass]='{"color-point-active": setting.markColor === markColor}'>
+          <div [style.background]='markColor' (click)='colorChange("mark", markColor)'></div>
+        </div>
+      </div>
+    </div>
+    <div class='setting-title'>单位</div>
+    <div class='setting-unit-line'>
+      <nz-radio-group [(ngModel)]='setting.unit' (ngModelChange)='unitChange()'>
+        <label *ngFor='let unitItem of unitCfg' nz-radio [nzValue]='unitItem.value'
+          class='btn-radio'>{{unitItem.label}}</label>
+      </nz-radio-group>
+    </div>
+  </div>
+</ng-template>
+
+<div class='archgl-gum-mk2-text' *ngIf='nzmdMarkText.isOpen'>
+  <div class='mk2-mask' (click)='cancelAddTextMark2Gum()'></div>
+
+  <nz-input-group [nzSuffix]="suffixTemplate" class='mk2-input' [style.left]='nzmdMarkText.x + "px"'
+    [style.top]='nzmdMarkText.y + "px"'>
+    <input nz-input placeholder="请输入标注信息" autofocus="autofocus" #mkTextInput [(ngModel)]="nzmdMarkText.text"
+      (keyup)="addTextMark2Gum('key', $event)" />
+  </nz-input-group>
+  <ng-template #suffixTemplate>
+    <i nz-icon nzType="check-circle" nzTheme="fill" nz-tooltip nzTitle="确定" (click)='addTextMark2Gum("btn")'></i>
+  </ng-template>
+
+</div>

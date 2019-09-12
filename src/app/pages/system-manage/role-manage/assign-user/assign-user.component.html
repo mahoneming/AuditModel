@@ -1,0 +1,34 @@
+<div class="assign-user page-container">
+    <nz-card>
+        <nz-transfer [nzDataSource]="tableList" nzShowSearch="true" [nzShowSelectAll]="false" [nzTitles]="title" nzSearchPlaceholder="请输入搜索的姓名"
+            [nzRenderList]="[renderList, renderList]" (nzSelectChange)="select($event)" (nzChange)="change($event)" (nzSearchChange)="search($event)">
+            <ng-template #renderList let-items let-direction="direction" let-stat="stat"
+                let-onItemSelectAll="onItemSelectAll" let-onItemSelect="onItemSelect">
+                <nz-table #t [nzData]="convertItems(items)" nzSize="small">
+                    <thead>
+                        <tr>
+                            <th nzShowCheckbox [nzChecked]="stat.checkAll" [nzIndeterminate]="stat.checkHalf"
+                                (nzCheckedChange)="onItemSelectAll($event)"></th>
+                            <th>姓名</th>
+                            <th>账号</th>
+                            <th>部门</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of t.data" (click)="onItemSelect(data)">
+                            <td nzShowCheckbox [nzChecked]="data.checked" (nzCheckedChange)="onItemSelect(data)"></td>
+                            <td>{{ data.name }}</td>
+                            <td>{{ data.userName }}</td>
+                            <td>{{ data.organizationUnitName || '-' }}</td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </ng-template>
+        </nz-transfer>
+    </nz-card>
+</div>
+
+<!-- 弹出框 -->
+<!-- <nz-modal [(nzVisible)]="isModalOpen" nzTitle="选择用户" (nzOnCancel)="resetModalForm()" (nzOnOk)="handleAddOk()">
+
+</nz-modal> -->

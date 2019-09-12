@@ -1,0 +1,50 @@
+.project-model {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  .ant-btn-danger {
+    color: #fff;
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    width: 250px;
+    z-index: 100;
+    &:hover {
+      color: #fff;
+      background-color: #ff7875;
+      border-color: #ff7875;
+    }
+  }
+  .tree {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    width: 250px;
+    z-index: 100;
+  }
+
+  .info {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 100;
+  }
+
+  .left-button {
+    top: 25%;
+    left: 2px;
+    position: absolute;
+    z-index: 999;
+  }
+
+  .right-button {
+    top: 25%;
+    right: 2px;
+    position: absolute;
+    z-index: 999;
+  }
+}

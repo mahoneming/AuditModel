@@ -1,0 +1,45 @@
+<div class="login-log page-container">
+    <!-- 表格 -->
+    <nz-card style="width:100%;" [nzTitle]="topTemplate" [nzActions]="[bottomTemplate]">
+        <nz-table #basicTable [nzData]="tableInfo" nzShowPagination="false">
+            <thead>
+                <tr>
+                    <th nzWidth="10%">登录名</th>
+                    <th nzWidth="30%">浏览器信息</th>
+                    <th nzWidth="10%">状态</th>
+                    <th nzWidth="20%">IP地址</th>
+                    <th nzWidth="30%">登录时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data">
+                    <td>{{data.userNameOrEmailAddress}}</td>
+                    <td class="browserInfo" [title]="data.browserInfo">{{data.browserInfo}}</td>
+                    <td [ngClass]="{'table-danger': data.result !== '成功'}">{{data.result}}</td>
+                    <td>{{data.clientIpAddress}}</td>
+                    <td>{{data.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+    <ng-template #topTemplate>
+        <div class="login-log-tool">
+            <nz-input-group nzSearch nzSize="middle" [nzAddOnAfter]="suffixButton">
+                <input type="text" [(ngModel)]="listForm.Filter" nz-input placeholder="请输入关键字" (keyup)="keyupEvent($event)"/>
+            </nz-input-group>
+            <ng-template #suffixButton>
+                <button (click)="searchItem()" nz-button nzType="primary" nzSize="middle" nzSearch>搜索</button>
+            </ng-template>
+        </div>
+    </ng-template>
+    <ng-template #bottomTemplate>
+        <div class="pager">
+            <nz-pagination [(nzPageIndex)]="listForm.SkipCount" [(nzPageSize)]="listForm.maxResultCount" [(nzTotal)]="listForm.nzTotal"
+                (nzPageIndexChange)="pageChange($event)" nzShowQuickJumper [nzShowTotal]="totalTemplate">
+            </nz-pagination>
+            <ng-template #totalTemplate let-total>
+                共{{listForm.nzTotal}}条
+            </ng-template>
+        </div>
+    </ng-template>
+</div>

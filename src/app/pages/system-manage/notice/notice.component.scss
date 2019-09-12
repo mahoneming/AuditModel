@@ -1,0 +1,28 @@
+.notice {
+  .notice-tool {
+    width: 300px;
+  }
+  ::ng-deep .ant-card {
+    height: 100%;
+    .ant-card-body {
+      height: calc(100% - 121px);
+    }
+  }
+}
+
+.notice-detail {
+  ::ng-deep .ant-modal-body {
+    height: 50vh;
+  }
+  .detail-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  .detail-subtitle {
+    margin-bottom: 20px;
+  }
+  .detail-content {
+    text-indent: 2em;
+  }
+}

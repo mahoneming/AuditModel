@@ -1,0 +1,140 @@
+<div class="expert-list page-container">
+    <nz-card [nzTitle]="topTemplate" [nzActions]="[bottomTemplate]">
+        <nz-table #rowSelectionTable nzSize="middle" [nzData]="listOfAllData" [nzShowPagination]="false"
+            (nzCurrentPageDataChange)="currentPageDataChange($event)">
+            <thead>
+                <tr>
+                    <th nzShowCheckbox [(nzChecked)]="isAllDisplayDataChecked" [nzIndeterminate]="isIndeterminate"
+                        (nzCheckedChange)="checkAll($event)"></th>
+                    <th>姓名</th>
+                    <th>账号</th>
+                    <th>手机</th>
+                    <th>部门</th>
+                    <th>审查次数</th>
+                    <th>违约次数</th>
+                    <th>角色</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of rowSelectionTable.data">
+                    <td nzShowCheckbox [(nzChecked)]="mapOfCheckedId[data.id]" (nzCheckedChange)="refreshStatus()"></td>
+                    <td>{{data.name || '-'}}</td>
+                    <td>{{data.userName || '-'}}</td>
+                    <td>{{data.phoneNumber || '-'}}</td>
+                    <td>{{data.organizationUnitName || '-'}}</td>
+                    <td>{{data.auditCount}}</td>
+                    <td>{{data.breakCount}}</td>
+                    <td>
+                        <ng-container *ngIf="data.roles.length === 0">
+                            -
+                        </ng-container>
+                        <ng-container *ngIf="data.roles.length !== 0">
+                            <div>
+                                <span *ngFor="let item of data.roles ;let idx1 = index "
+                                    [title]="item.displayName">{{item.displayName || '-'}} <span
+                                        *ngIf="data.roles.length !== 1 && idx1 == 0">,</span> </span>
+                            </div>
+                        </ng-container>
+                    </td>
+                    <td>
+                        <!-- 当前用户不能自己禁用，admin无法禁用 -->
+                        <nz-switch (click)="UpdateActiveStatus(data)" [nzControl]="false"
+                            *ngIf="data.userName !== 'admin' && data.userName !== userName" [ngModel]="data.isActive"
+                            nzCheckedChildren="启用" nzUnCheckedChildren="禁用">
+                        </nz-switch>
+                    </td>
+                    <td class="table-action">
+                        <i (click)="resetPassword(data)" title="重置密码" nz-icon class="icon" type="retweet"
+                            theme="outline"></i>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <i (click)="editUser(data)" title="编辑" nz-icon nzType="edit" nzTheme="outline"></i>
+                        <ng-container *ngIf="data.primaryId.slice(0, 24) !== '00000000-0000-0000-0000-'">
+                            <nz-divider nzType="vertical"></nz-divider>
+                            <i (click)="removeUser(data)" title="删除" nz-icon nzType="delete" nzTheme="outline"></i>
+                        </ng-container>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+    <ng-template #topTemplate>
+        <div class="expert-list-tool">
+            <nz-input-group nzSearch nzSize="middle" [nzAddOnAfter]="suffixButton">
+                <input type="text" [(ngModel)]="listForm.Filter" nz-input placeholder="请输入关键字" (keyup)="keyupEvent($event)" />
+            </nz-input-group>
+            <ng-template #suffixButton>
+                <button (click)="searchItem()" nz-button nzType="primary" nzSize="middle" nzSearch>搜索</button>
+            </ng-template>
+            <button (click)="isAddModal=true" nz-button nzType="primary" style="margin-left: 20px;">新增</button>
+            <!-- <button (click)="batchRemoveUser()" nz-button nzType="primary" style="margin-left: 20px;">批量删除</button> -->
+        </div>
+    </ng-template>
+    <ng-template #bottomTemplate>
+        <div class="pager">
+            <nz-pagination [(nzPageIndex)]="pageIndex" [(nzPageSize)]="listForm.MaxResultCount" [(nzTotal)]="listForm.nzTotal"
+                (nzPageIndexChange)="pageChange($event)" nzShowQuickJumper [nzShowTotal]="totalTemplate">
+            </nz-pagination>
+            <ng-template #totalTemplate let-total>
+                共{{listForm.nzTotal}}条
+            </ng-template>
+        </div>
+    </ng-template>
+</div>
+
+<!-- 弹出框（新增，修改） -->
+<nz-modal [(nzVisible)]="isAddModal" nzTitle="新增/编辑人员" (nzOnCancel)="resetModalForm()" (nzOnOk)="handleAddOk()">
+    <form nz-form [formGroup]="validateAddForm">
+        <nz-form-item>
+            <nz-form-label nzRequired [nzSpan]="4">账号</nz-form-label>
+            <nz-form-control nzHasFeedback [nzSpan]="18" nzErrorTip="账号不能为空">
+                <input nz-input formControlName="userName" maxlength="50" required />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired [nzSpan]="4">姓名</nz-form-label>
+            <nz-form-control nzHasFeedback [nzSpan]="18" nzErrorTip="姓名不能为空">
+                <input nz-input formControlName="name" maxlength="50" required />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired [nzSpan]="4">手机</nz-form-label>
+            <nz-form-control nzHasFeedback [nzSpan]="18" nzErrorTip="手机输入有误">
+                <input nz-input formControlName="phoneNumber" maxlength="11" minlength="11" required />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired [nzSpan]="4">邮箱</nz-form-label>
+            <nz-form-control nzHasFeedback [nzSpan]="18" nzErrorTip="邮箱输入有误">
+                <input nz-input formControlName="EmailAddress" maxlength="50" required email />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired [nzSpan]="4">组织</nz-form-label>
+            <nz-form-control nzHasFeedback [nzSpan]="18" nzErrorTip="组织不能为空">
+                <nz-select nzRequired nzPlaceHolder="组织结构选取" nzShowSearch required
+                    formControlName="organizationUnitsValue">
+                    <nz-option *ngFor="let item of organizeList" [nzValue]="item.id" [nzLabel]="item.displayName">
+                    </nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label nzRequired [nzSpan]="4">角色</nz-form-label>
+            <nz-form-control nzHasFeedback [nzSpan]="18" nzErrorTip="角色不能为空">
+                <nz-select nzRequired nzPlaceHolder="组织结构选取" nzShowSearch required
+                    formControlName="assignedRoleNamesValue">
+                    <nz-option *ngFor="let item of roleList" [nzValue]="item.name" [nzLabel]="item.displayName">
+                    </nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="4">密码</nz-form-label>
+            <nz-form-control nzHasFeedback [nzSpan]="18" nzErrorTip="密码不能为空">
+                <input nz-input formControlName="password" maxlength="50" placeHolder="默认密码与账号一致" />
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</nz-modal>

@@ -1,0 +1,33 @@
+<!-- <router-outlet></router-outlet> -->
+<div class="project-model">
+    <div class="tree">
+        <app-tree-panel [projectId]="projectId" [modelGroupId]="modelGroupId"></app-tree-panel>
+    </div>
+
+    <div class="info">
+        <app-collapse-panel [projectId]="projectId" [modelGroupId]="modelGroupId"></app-collapse-panel>
+    </div>
+    <button *ngIf="isReviewShow" (click)="isReviewVisible=true" nz-button nzType="danger">审核</button>
+    <app-model-panel [projectId]="projectId" [modelGroupId]="modelGroupId" #modelPanel></app-model-panel>
+</div>
+
+<nz-modal [(nzVisible)]="isReviewVisible" nzTitle="审核项目" (nzOnCancel)="isReviewVisible=false" (nzOnOk)="submitReview()">
+    <form nz-form [formGroup]="validateReviewForm">
+        <nz-form-item>
+            <nz-form-label [nzSpan]="4" nzRequired>评语信息</nz-form-label>
+            <nz-form-control [nzSpan]="18" nzErrorTip="评语不能为空">
+                <textarea nz-input formControlName="descr" placeholder="填写专家评语"
+                    [nzAutosize]="{ minRows: 2, maxRows: 6 }"></textarea>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="4" nzRequired>审核状态</nz-form-label>
+            <nz-form-control [nzSpan]="18" nzErrorTip="审核状态不能为空">
+                <nz-select formControlName="status" nzAllowClear nzPlaceHolder="请选择状态">
+                    <nz-option nzValue="1" nzLabel="通过"></nz-option>
+                    <nz-option nzValue="2" nzLabel="不通过"></nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</nz-modal>

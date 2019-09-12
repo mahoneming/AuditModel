@@ -1,0 +1,79 @@
+.input-file {
+    width: 0px;
+    height: 0px;
+    overflow: hidden;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.flowUp-btn{
+    color: #fff;
+    padding: 5px 10px;
+    background: #2cbdc5;
+    border-radius: 3px;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.attachment-item{
+    .btn-link{
+        cursor: pointer;
+        color: #00d6dc
+    }
+}
+.transfers{
+    width: 100%;
+    .transfer{
+        padding: 0px 20px;
+        width: 100%;
+        position: relative;
+        background: #fff;
+        .mask{
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            background: rgba(0, 214, 220,.4);
+        }
+        .row{
+            height: 40px;
+            line-height: 40px;
+            position: relative;
+            z-index: 9;
+            i{
+                padding: 0 5px;
+                cursor: pointer;
+                font-weight: bold;
+            }
+        }
+        .name{
+            width: 40%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            float: left;
+            text-align:left;
+        }
+        .size{
+            float: left;
+            width: 30%;
+            text-align: center;
+        }
+        .percent{
+            float: left;
+            width: 15%;
+            text-align: center;
+        }
+        .control{
+            float: left;
+            width: 15%;
+        }
+    }
+}

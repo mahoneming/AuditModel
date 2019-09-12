@@ -1,0 +1,263 @@
+<!-- 开关按钮 -->
+
+<div class="left-button" *ngIf='!leftShow' (click)="leftOpen()">
+  <button nz-button nzType="primary" style="height: 80px;">
+    <i nz-icon type="double-right" theme="outline"></i>
+  </button>
+</div>
+
+<!-- 查看模式下左侧内容为三维模型，验收节点 -->
+
+
+
+<div class="tree-container" *ngIf="leftShow">
+  <div nz-row class="tree-head">
+    <div nz-col [nzSpan]="20" style="cursor: pointer;"
+      [ngClass]="{'text-success ': show && !openEditstatus }" (click)="switch('3D')">
+      三维模型
+    </div>
+    <!-- <div *ngIf="!openEditstatus" nz-col nzSpan=10 style="cursor: pointer;" [ngClass]="{'text-success': !show }"
+      (click)="switch('2D')">
+      验收节点
+    </div> -->
+    <div nz-col nzSpan=4>
+      <i nz-icon type="close" theme="outline" class="close" (click)="closeLeft()"></i>
+    </div>
+  </div>
+  <div class="tree-body" *ngIf="show || openEditstatus ">
+    <nz-tree [nzData]="treeNode" [nzCheckable]="true" (nzCheckBoxChange)="mouseClick($event)" [nzCheckedKeys]="defaultCheckedKeys"
+      style="padding: 10px 0px;position: relative;left: -10px;">
+    </nz-tree>
+  </div>
+  <!-- 查看模式下验收节点 -->
+  <div class="drawings-body" *ngIf="!show">
+    <!-- 查看模式下只有节点目录 -->
+    <div *ngIf="!openEditstatus">
+      <div class="card" *ngFor='let item of acceptanceNode' (click)="exhibition(item)" [ngStyle]="item.style">
+        <i nz-icon [nzType]="item.isExpanded?'folder-open':'folder'" nzTheme="fill"></i>
+        <span class="name">
+          {{item.name}}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- 编辑模式下验收节点在右侧 -->
+
+<div class="editmode" *ngIf="openEditstatus && leftShow">
+  <div nz-row class="tree-head">
+    <!-- <div nz-col nzSpan=10 style="cursor: pointer;" [ngClass]="{'text-success': show }" (click)="switch('3D')">
+      三维模型
+    </div> -->
+    <!-- <div nz-col nzSpan=24>
+      验收节点
+    </div> -->
+  </div>
+  <div class="drawings-body">
+    <!-- 编辑模式下结构树 -->
+    <div class="card" *ngIf="openEditstatus">
+      <nz-input-group [nzSuffix]="suffixIcon">
+        <input type="text" nz-input placeholder="搜索" [(ngModel)]="searchValue">
+      </nz-input-group>
+      <ng-template #suffixIcon>
+        <i nz-icon type="search"></i>
+      </ng-template>
+
+      <nz-tree #treeCom [nzData]="acceptanceNodes" [nzSearchValue]="searchValue" (nzDblClick)="openFolder($event)"
+        nzShowIcon="true" (nzExpandChange)="nzEvent($event)" (nzSearchValueChange)="nzEvent($event)" [nzTreeTemplate]="nzTreeTemplate">
+        <ng-template #nzTreeTemplate let-node>
+          <div [id]="node.key" style="display: inline-block;width: 90%;" class="acceptanceNode" [class.active]="currentNode?.key===node.key"   >
+            <span class=" title hidden" [title]="node.origin.title" (click)="editAcceptanceNodesClickEvent(node)">
+              <i
+              nz-icon
+              [type]="node.isExpanded?'folder-open-fill':node.icon"
+              class="ant-tree-switcher-line-icon"
+              (click)="openFolder(node)"
+            ></i>
+              {{node.origin.title}}
+            </span>
+            <span class="bindCss" *ngIf="node.origin.isLeaf && node.origin.propertyIds.length !=0">
+              <i nz-icon nzType="link" nzTheme="outline"></i>
+            </span>
+            <span class="folder-tools">
+              <i nz-icon type="edit" title="编辑" *ngIf="!node.origin.isLeaf " (click)="editNode(node)"></i>
+              <nz-divider *ngIf="!node.origin.isLeaf" nzType="vertical"></nz-divider>
+              <i nz-icon nzType="file-add" nzTheme="outline" *ngIf=" node.origin.pType == 15" theme="twotone"
+                title="文件管理" (click)="upLoadNode(node)"></i>
+              <nz-divider *ngIf=" node.origin.pType == 15" nzType="vertical"></nz-divider>
+              <!-- <i nz-icon type="delete" title="删除" (click)="deleteNode(node)"></i> -->
+              <a nz-popconfirm nzTitle="确定删除吗?" (nzOnConfirm)="deleteNode(node)" style="color: black;opacity: 0.7;"
+                ><i nz-icon type="delete" title="删除"></i></a>
+                <!-- (click)="deleteNode(node)" -->
+            </span>
+          </div>
+        </ng-template>
+      </nz-tree>
+    </div>
+  </div>
+
+  <!-- 编辑模式下底部工具栏 -->
+  <div class="bottomTools" *ngIf=" openEditstatus">
+    <!-- <span class="folder"><i nz-icon type="folder" theme="fill"></i></span>   文件夹功能隐藏，暂不开放 -->
+    <span class="switch" style="margin-left: 10px;vertical-align:middle">
+      <nz-switch nzSize="small" [(ngModel)]="showColor"></nz-switch>
+    </span>
+    <span style="font-size: 12px;position: absolute;top: 3.5px;left: 42px;">显示颜色</span>
+    <span class="addAcceptanceNode" title="新增节点" (click)='addAcceptanceNode()'><i nz-icon type="plus"
+        theme="outline"></i></span>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- 添加验收节点弹窗 -->
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="addAcceptanceNodeStep1" [nzContent]="addAcceptanceNodeContent"
+  [nzFooter]="addAcceptanceNodeFooter" nzWidth="30%" (nzOnCancel)="addAcceptanceNodeStep1 = !addAcceptanceNodeStep1"
+  nzTitle="新增验收节点">
+  <ng-template #addAcceptanceNodeContent>
+    <div class="nodeName">
+      <div for="nodeName" style="float: left;"> 节点名称：</div>
+      <input id="nodeName" style="width: 64%;bottom: 10px;" maxlength="100" nz-input placeholder="请输入节点名称"
+        [(ngModel)]="addAcceptanceNodeModel.name">
+      <span class="colorPiker" [(colorPicker)]="transInfo.Color" [style.background]="transInfo.Color"></span>
+    </div>
+    <div class="planTime">
+      <span>计划时间：</span>
+      <nz-range-picker [nzFormat]="'yyyy/MM/dd'" [(ngModel)]="transInfo.PlanTimeRange"></nz-range-picker>
+    </div>
+    <div class="finalTime">
+      <span>完成时间：</span>
+      <nz-range-picker [nzFormat]="'yyyy/MM/dd'" [(ngModel)]="transInfo.FinishTimeRange"></nz-range-picker>
+    </div>
+
+  </ng-template>
+  <ng-template #addAcceptanceNodeFooter>
+    <button nz-button [nzType]="'primary'" (click)="goStepTwo()" [nzLoading]="isSpinning">下一步</button>
+  </ng-template>
+</nz-modal>
+
+<!-- 添加验收节点弹窗二（选取检验批） -->
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="addAcceptanceNodeStep2" [nzContent]="addAcceptanceNodeContent2"
+  [nzFooter]="addAcceptanceNodeFooter2" nzWidth="70%" (nzOnCancel)="addAcceptanceNodeStep2 = !addAcceptanceNodeStep2"
+  nzTitle="新增验收节点">
+
+  <ng-template #addAcceptanceNodeContent2>
+    <div class="templateBody">
+      <div style="width: 30%;margin-bottom: 10px;">
+        <nz-input-group [nzSuffix]="suffixIcon">
+          <input type="text" nz-input placeholder="搜索" [(ngModel)]="searchValue1">
+        </nz-input-group>
+        <ng-template #suffixIcon>
+          <i nz-icon type="search"></i>
+        </ng-template>
+      </div>
+
+      <div class="body-left">
+        <nz-tree #nzTreeComponent [nzData]="templateNodes" [nzSearchValue]="searchValue1" (nzClick)="templateClickEvent($event)"
+          (nzDblClick)="openFolder($event)" (nzExpandChange)="nzEvent($event)" nzShowIcon="true"
+          (nzSearchValueChange)="nzEvent($event)" [nzTreeTemplate]="nzTreeTemplate">
+          <ng-template #nzTreeTemplate let-node>
+          <span class="body-left-hidden" [title]="node.origin.name" [ngStyle]="node.origin.style">
+            <i
+              nz-icon
+              [type]="(node.isExpanded && !node.isLeaf)?'folder-open-fill':node.icon"
+              class="ant-tree-switcher-line-icon" 
+              (click)="openFolder(node)"
+            ></i>
+            <span style="margin-left: 4px;vertical-align: 2%;">{{node.origin.title}}</span>
+          </span> 
+          </ng-template>
+        </nz-tree>
+      </div>
+      <div class="body-middle">
+        <i nz-icon nzType="right" nzTheme="outline"></i>
+      </div>
+      <div class="body-right">
+        <div class="checkedNode" *ngFor="let item of checkedNodeList">
+          <div class="rightNodeHidden" [title]="item.name" (click)="positionToNode(item)">
+            <i nz-icon nzType="profile" style="margin-left: 1%;"></i>
+            {{item.name}}
+          </div>
+          <span style="float: right;"> <i nz-icon type="delete" title="删除" (click)="reMovecheckedNodeList(item)"
+              class="delete"></i></span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #addAcceptanceNodeFooter2>
+    <button nz-button [nzType]="'primary'" [nzLoading]="isSpinning" appDebounceClick (debounceClick)="addAcceptanceNodeDone()">提交</button>
+  </ng-template>
+</nz-modal>
+
+
+
+<!-- 文件上传页面 -->
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isUploadfile" [nzContent]="UploadfileContent" [nzFooter]="null"
+  nzWidth="70%" (nzOnCancel)="isUploadfile = !isUploadfile" [nzTitle]="UploadfileTitle">
+  <ng-template #UploadfileTitle>
+    【{{currentNode?currentNode.origin.title:''}}】-文件管理
+  </ng-template>
+  <ng-template #UploadfileContent>
+
+    <div>
+      <button nz-button nzType="primary" (click)="uploadModel.click()" *ngIf="fileShow"
+        style="margin-bottom: 20px;">上传检验批表
+      </button>
+      <input type="file" class="input-file" multiple (change)="fileModelChange($event)" [accept]="fileType" #uploadModel>
+      <nag-file-uploader [ngStyle]="modelStyle" style="margin-bottom: 20px;" [autoUpload]="true"
+        [flowFiles]="modelQueue" [multiple]="true" (onSuccess)="modelSuccess($event)" [fileHost]="FILEURL"
+        (onRemove)="reModel()" #modelUploader>
+      </nag-file-uploader>
+    </div>
+
+
+
+    <nz-table #rowSelectionTable nzShowSizeChanger [nzData]="listOfAllData"
+      (nzCurrentPageDataChange)="currentPageDataChange($event)">
+      <thead>
+        <tr>
+          <!-- <th nzShowCheckbox nzShowRowSelection [nzSelections]="listOfSelection" [(nzChecked)]="isAllDisplayDataChecked"
+            [nzIndeterminate]="isIndeterminate" (nzCheckedChange)="checkAll($event)"></th> -->
+          <th>名称</th>
+          <th>大小</th>
+          <th>创建人</th>
+          <th>创建时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of rowSelectionTable.data">
+          <!-- <td nzShowCheckbox [(nzChecked)]="mapOfCheckedId[data.id]" (nzCheckedChange)="refreshStatus()"></td> -->
+          <td>{{ data.name }}{{data.extension}}</td>
+          <td>{{ data.size | FileSizePipe }}</td>
+          <td>{{ data.creatorUserName }}</td>
+          <td>{{ data.creationTime | DateTransformPipe}}</td>
+          <td>
+            <span class="tools">
+              <a href="javascript:;" (click)="download(data)" title="下载">
+                <i nz-icon type="download"></i>
+              </a>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a href="javascript:;" (click)="deleteCatalog(data)" title="删除">
+                <i nz-icon type="delete"></i>
+              </a>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+
+
+
+  </ng-template>
+  <ng-template #UploadfileFooter>
+    <button nz-button [nzType]="'primary'" (click)="goStepTwo()"></button>
+  </ng-template>
+</nz-modal>

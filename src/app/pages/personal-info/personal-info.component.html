@@ -1,0 +1,68 @@
+<div class="personal-info">
+    <div class="container">
+        <div class="head">
+            <div class="left">
+                个人基本信息
+            </div>
+            <!-- <div class="right">
+                <a (click)="comeBack()">返回</a>
+            </div> -->
+        </div>
+        <div class="content">
+            <div class="card">
+                <div class="card-img">
+                    <div class="img" [ngStyle]="addimgStyle" (click)="upload.click()"></div>
+                    <input type="file" class="input-file" (change)="fileChange($event)"
+                        accept="image/gif,image/jpeg,image/jpg,image/png,image/svg" #upload>
+                    <nag-file-uploader style="display: none" [autoUpload]="true" [flowFiles]="imageQueue"
+                        [multiple]="false" (onSuccess)="fileSuccess($event)" [fileHost]="FILEURL" #imageUploader>
+                    </nag-file-uploader>
+                </div>
+                <div class="card-text">
+                    <!-- 头像 -->
+                </div>
+                <div class="card-list" nz-row>
+                    <div nz-col nzSpan=4>
+                        账号
+                    </div>
+                    <div nz-col nzSpan=20>
+                        <input maxlength="30" nz-input [(ngModel)]="user.userName" disabled>
+                    </div>
+                </div>
+                <div class="card-list" nz-row>
+                    <div nz-col nzSpan=4>
+                        姓名
+                    </div>
+                    <div nz-col nzSpan=20>
+                        <input maxlength="50" nz-input [(ngModel)]="user.name">
+                    </div>
+                </div>
+                <div class="card-list" nz-row>
+                    <div nz-col nzSpan=4>
+                        手机
+                    </div>
+                    <div nz-col nzSpan=20>
+                        <input maxlength="11" nz-input [(ngModel)]="user.phoneNumber">
+                    </div>
+                </div>
+                <div class="card-list" nz-row>
+                    <div nz-col nzSpan=4>
+                        邮箱
+                    </div>
+                    <div nz-col nzSpan=20>
+                        <input maxlength="50" nz-input [(ngModel)]="user.emailAddress">
+                    </div>
+                </div>
+                <div class="card-function">
+                    <button nz-button nzType="default" (click)="reset()">重置</button>
+                    <button nz-button nzType="primary" style="margin-left: 20px" (click)="preservation()">保存</button>
+                </div>
+                <!--  -->
+                <!-- <div>
+              <nag-file-uploader [autoUpload]="true" [flowFiles]="imageQueue" [multiple]="false"
+                (onSuccess)="fileSuccess($event)" #imageUploader></nag-file-uploader>
+            </div> -->
+            </div>
+        </div>
+    </div>
+</div>

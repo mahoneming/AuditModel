@@ -1,0 +1,41 @@
+<div class="assign-manage page-container">
+    <nz-card>
+        <div style="overflow: hidden;height: 52px;">
+            <span>项目名称：{{name}}</span>
+            <button *ngIf="!(auditStatus > '1')" (click)="randomAssign()" nz-button nzType="primary"
+                style="margin-bottom: 20px;float: right;">随机指派专家</button>
+        </div>
+        <nz-transfer [nzDataSource]="tableList" nzShowSearch="true" [nzShowSelectAll]="false"
+            [nzTitles]="['专家列表', '已选专家列表']" nzSearchPlaceholder="请输入搜索的姓名" [nzRenderList]="[renderList, renderList]"
+            [nzCanMove]="canMove" (nzSelectChange)="select($event)" (nzChange)="change($event)"
+            (nzSearchChange)="search($event)">
+            <ng-template #renderList let-items let-direction="direction" let-stat="stat"
+                let-onItemSelectAll="onItemSelectAll" let-onItemSelect="onItemSelect">
+                <nz-table #t [nzData]="convertItems(items)" nzSize="small">
+                    <thead>
+                        <tr>
+                            <th nzShowCheckbox [nzChecked]="stat.checkAll" [nzIndeterminate]="stat.checkHalf"
+                                (nzCheckedChange)="onItemSelectAll($event)"></th>
+                            <th>姓名</th>
+                            <th>账号</th>
+                            <th>专业</th>
+                            <th>岗位</th>
+                            <th>手机号</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of t.data" (click)="onItemSelect(data)">
+                            <td nzShowCheckbox [nzChecked]="data.checked" (nzCheckedChange)="onItemSelect(data)"
+                                [nzDisabled]="data.disabled"></td>
+                            <td>{{ data.name }} <span *ngIf="data.status === 3" style="color: red">（超时）</span> </td>
+                            <td>{{ data.userName }}</td>
+                            <td>{{ data.majorName || '-' }}</td>
+                            <td>{{ data.positionName || '-' }}</td>
+                            <td>{{ data.phoneNumber }}</td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+            </ng-template>
+        </nz-transfer>
+    </nz-card>
+</div>

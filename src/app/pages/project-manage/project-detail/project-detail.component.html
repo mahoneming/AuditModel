@@ -1,0 +1,58 @@
+<div class="project-detail page-container">
+    <nz-card nzTitle="" [nzLoading]="isCardLoading">
+        <nz-descriptions nzTitle="项目信息查看" nzBordered>
+            <nz-descriptions-item nzTitle="项目名称" nzSpan="3">{{projectDetail.name}}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="项目编号">{{projectDetail.code}}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="施工阶段">{{findKeyByValue(projectInfoService.stage, projectDetail.stage)}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="项目类型">
+                {{findKeyByValue(projectInfoService.type, projectDetail.type)}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="项目区域">
+                {{projectDetail.areaName}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="创建时间">
+                {{projectDetail.creationTime | date:'yyyy-MM-dd HH:mm:ss'}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="项目状态">
+                {{findKeyByValue(projectInfoService.projectStatus, projectDetail.projectStatus)}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="工期">
+                {{projectDetail.takeLimit ? (projectDetail.takeLimit).toFixed(2) : '-'}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="投资总额">
+                {{ projectDetail.totalAmount ? (projectDetail.totalAmount).toFixed(2) : '-'}}（万）
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="项目图片">
+                {{projectDetail.imageUrl}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="所属机构">
+                {{projectDetail.organizationName}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="建设单位">
+                {{projectDetail.companyName}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="联系人">
+                {{projectDetail.companyContacts}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="联系电话">
+                {{projectDetail.companyPhoneNumber}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="联系地址"  [nzSpan]="2">
+                {{projectDetail.companyAddress}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="是否关注">
+                {{projectDetail.mark === '1' ? '是' : '否'}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="是否重点">
+                {{projectDetail.isImportant === '1' ? '是' : '否'}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="是否是否立项关注">
+                {{projectDetail.isApprove === '1' ? '是' : '否'}}
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="简介" [nzSpan]="3">
+                {{projectDetail.description}}
+            </nz-descriptions-item>
+        </nz-descriptions>
+    </nz-card>
+</div>

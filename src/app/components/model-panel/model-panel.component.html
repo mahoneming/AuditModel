@@ -1,0 +1,22 @@
+<div class="ModelTool"
+  style="overflow-x: auto;overflow-y: hidden;float:left;height:100%;;width:100%;position: relative;">
+  <div *ngIf="dragStart" style="width: 100%;height: 100%;z-index: 1;position:absolute;"></div>
+  <div id="ModelContainer" style="z-index: 0;position:absolute"></div>
+  <app-gum-toolbar #GumToolbar [benchId]='leftBench' [gumStyle]='gumToolBar.style' gumType='3d'
+    (gumEvent)='toolbarEvent($event)'></app-gum-toolbar>
+  <!-- <div class="loading">
+    <div class="content" *ngIf="isloding">
+      <nz-spin [nzSize]="'large'">
+      </nz-spin>
+      <p>正在检查</p>
+    </div> -->
+  <!-- </div> -->
+
+  <div class="loading" *ngIf="loading">
+    <nz-spin class="content" nzTip="模型渲染中..." nzSimple [nzSize]="'large'">
+      <!-- <nz-alert  nzType="info" nzMessage="Alert message title"
+        nzDescription="Further details about the context of this alert.">
+      </nz-alert> -->
+    </nz-spin>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="login" [ngClass]="{'login-audit': apiPath === 'audit'}">
+    <div class="login-top">
+        <img *ngIf="apiPath === 'bim'" src="../../../assets/images/login/logo.png" alt="">
+        <img *ngIf="apiPath === 'audit'" src="../../../assets/images/login/logo1.png" alt="">
+    </div>
+    <div class="login-body" [ngClass]="{'login-body-audit': apiPath === 'audit'}">
+        <form nz-form [formGroup]="validateForm" class="login-form" [ngClass]="{'login-form-audit': apiPath === 'audit'}" (ngSubmit)="submitForm()">
+            <nz-form-item>
+                <nz-form-control nzErrorTip="请输入用户名">
+                    <nz-input-group nzPrefixIcon="user">
+                        <input type="text" nz-input formControlName="userNameOrEmailAddress" placeholder="用户名" autofocus />
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control nzErrorTip="请输入密码">
+                    <nz-input-group nzPrefixIcon="lock">
+                        <input type="password" nz-input formControlName="password" placeholder="密码" />
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control>
+                    <!-- <label nz-checkbox formControlName="remember">
+                        <span>记住我</span>
+                    </label> -->
+                    <button nz-button class="login-form-button" [nzType]="'primary'">登录</button>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </div>
+    <div class="login-footer" [ngClass]="{'login-footer-audit': apiPath === 'audit'}">
+        <div class="qrcode">
+            <img src="../../../assets/images/login/kefu-qrcode.jpg" alt=""><br>
+            技术支持客服
+        </div>
+        <p *ngIf="apiPath === 'bim'">版权所有：重庆市住房和城乡建设委员会</p>
+        <p *ngIf="apiPath === 'audit'">版权所有：重庆市建设工程质量监督总站</p>
+        <p>
+            <span>技术支持：筑智建ARchGL</span>
+            <span>服务电话：400-088-4129</span>
+            <a href="http://www.beian.miit.gov.cn/" [ngStyle]="{'color': apiPath === 'bim' ? '#fff' : '#000'}">备案号：渝ICP备14001300号-9</a>
+            <!-- <span></span> -->
+        </p>
+    </div>
+</div>

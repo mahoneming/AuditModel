@@ -1,0 +1,84 @@
+<div class="region-manage page-container">
+    <!-- 顶部搜索条件 -->
+    <!-- 表格 -->
+    <nz-card style="width:100%;" [nzTitle]="topTemplate">
+        <nz-table #expandTable [nzData]="listOfMapData" [nzScroll]="{ y: '600px' }" nzShowPagination="false">
+            <thead>
+                <tr>
+                    <th nzWidth="20%">名称</th>
+                    <th nzWidth="20%">编码</th>
+                    <th nzWidth="20%">状态</th>
+                    <th nzWidth="20%">创建时间</th>
+                    <th nzWidth="20%">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let data of expandTable.data">
+                    <ng-container *ngFor="let item of mapOfExpandedData[data.key]">
+                        <tr *ngIf="(item.parent && item.parent.expand) || !item.parent">
+                            <td [nzIndentSize]="item.level * 20" [nzShowExpand]="!!item.children"
+                                [(nzExpand)]="item.expand"
+                                (nzExpandChange)="collapse(mapOfExpandedData[data.key], item, $event)">
+                                {{ item.name }}
+                            </td>
+                            <td>{{ item.code }}</td>
+                            <td>{{ item.status === 1 ? '启用' : '禁用' }}</td>
+                            <td>{{ item.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+                            <td class="table-action">
+                                <i (click)="addRegionChild(item)" title="新增节点" nz-icon nzType="file-add"
+                                    nzTheme="outline"></i>
+                                <nz-divider nzType="vertical"></nz-divider>
+                                <i (click)="editRegion(item)" title="编辑" nz-icon nzType="edit" nzTheme="outline"></i>
+                                <nz-divider nzType="vertical"></nz-divider>
+                                <i (click)="removeRegion(item)" title="删除" nz-icon nzType="delete"
+                                    nzTheme="outline"></i>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            </tbody>
+        </nz-table>
+        <!-- <div class="pager">
+            <nz-pagination [(nzPageIndex)]="pageInfo.nzPageIndex" [(nzPageSize)]="pageInfo.nzPageSize"
+                [(nzTotal)]="pageInfo.nzTotal" (nzPageIndexChange)="pageChange($event)" nzShowQuickJumper
+                [nzShowTotal]="totalTemplate"></nz-pagination>
+            <ng-template #totalTemplate let-total>
+                共{{nzTotal}}条
+            </ng-template>
+        </div> -->
+    </nz-card>
+    <ng-template #topTemplate>
+        <!-- <nz-input-group nzSearch nzSize="middle" [nzAddOnAfter]="suffixButton">
+            <input type="text" [(ngModel)]="listForm.Filter" nz-input placeholder="请输入关键字" />
+        </nz-input-group>
+        <ng-template #suffixButton>
+            <button (click)="searchItem()" nz-button nzType="primary" nzSize="middle" nzSearch>搜索</button>
+        </ng-template> -->
+        <button (click)="isAddVisible=true" nz-button nzType="primary">新增区域</button>
+    </ng-template>
+</div>
+
+<nz-modal [(nzVisible)]="isAddVisible" nzTitle="新增/编辑区域" (nzOnCancel)="resetForm()" (nzOnOk)="submitForm()">
+    <form nz-form [formGroup]="validateForm">
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>区域名称</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入名称">
+                <input formControlName="name" maxlength="50" nz-input placeholder="" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>区域编码</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入编码">
+                <input formControlName="code" maxlength="10" nz-input placeholder="" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>区域状态</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请选择状态">
+                <nz-radio-group formControlName="status">
+                    <label *ngFor="let item of status" nz-radio nzValue="{{item.value}}">{{item.name}}</label>
+                </nz-radio-group>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</nz-modal>

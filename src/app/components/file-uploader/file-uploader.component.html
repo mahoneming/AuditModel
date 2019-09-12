@@ -1,0 +1,39 @@
+<div class="fileUploader">
+  <ng-template [ngTemplateOutlet]="zzjUploadButton || defaultButton">
+  </ng-template>
+  <ng-template #defaultButton>
+    <span class="flowUp-btn" (click)="checkFileInput.click()"
+      *ngIf="multiple || (!multiple&&flowFiles.length==0)">添加文件</span>
+  </ng-template>
+  <ng-container #flowAdvanced="flow" [flowConfig]="{target: '/'}"></ng-container>
+  <input type="file" #checkFileInput class="input-file" (change)="fileUpload($event)" />
+  <input #uploadFileInput type="file" class="input-file" flowButton [flow]="flowAdvanced.flowJs">
+  <!-- <div class="drop-area" flowDrop [flow]="flowAdvanced.flowJs">
+      <span>Drop files here</span>
+    </div> -->
+  <div class="transfers" #transferRow *ngIf="showProgress">
+    <div class="transfer" *ngFor="let transfer of flowFiles;let i = index">
+      <div class="mask" [style.width]="transfer.percent +'%'"></div>
+      <div class="row">
+        <span class="name">{{transfer.name}}</span>
+        <span class="size">{{sizeTransform(transfer.size)}}</span>
+        <span class="percent">{{transfer.percent}}%</span>
+        <div class="control">
+          <i class="anticon anticon-pause" (click)="paused(transfer)"
+            *ngIf="transfer.paused == false && transfer.percent!=100"></i>
+          <i class="anticon anticon-caret-right" (click)="start(transfer,0)"
+            *ngIf="transfer.paused == true && transfer.percent!=100"></i>
+          <i class="anticon anticon-close" (click)="remove(transfer, i)"></i>
+        </div>
+      </div>
+
+      <!-- <div>
+          <button (click)="getStatus(transfer)">getStatus</button>
+          <button (click)="getUploadUrl()">getUploadUrl</button>
+          <button (click)="paused(transfer)">暂停</button>
+          <button (click)="start(transfer)">开始</button>
+          <button *ngIf="transfer.url" (click)="downLoad(transfer)">下载</button>
+        </div> -->
+    </div>
+  </div>
+</div>

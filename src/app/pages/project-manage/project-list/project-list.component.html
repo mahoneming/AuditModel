@@ -1,0 +1,327 @@
+<div class="project-list page-container">
+    <nz-card [nzTitle]="topTemplate" [nzActions]="[bottomTemplate]" class="zzj-scrollbar">
+        <nz-table [nzData]="projectList" [nzShowPagination]="false">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th nzWidth="300px">名称</th>
+                    <th>编号</th>
+                    <th>区域</th>
+                    <th>类型</th>
+                    <th>阶段</th>
+                    <th>状态</th>
+                    <th>审核状态</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of projectList; let i=index">
+                    <td>{{ i + 1 }}</td>
+                    <td>
+                        <div class="text-underline" [title]="item.name" (click)="routeTo('group', item)">{{ item.name }}
+                        </div>
+                    </td>
+                    <td>{{ item.code }}</td>
+                    <td>{{ item.areaName || '-' }}</td>
+                    <td>{{ findKeyByValue(projectInfoService.type, item.type) }}</td>
+                    <td>{{ findKeyByValue(projectInfoService.stage, item.stage) }}</td>
+                    <td>{{ findKeyByValue(projectInfoService.projectStatus, item.projectStatus) }}</td>
+                    <td>
+                        <ng-container *ngIf="item.stage === 3; else elseTemplate">
+                            <nz-badge *ngIf="item.auditStatus === 1" nzStatus="default"></nz-badge>
+                            <nz-badge *ngIf="item.auditStatus === 2" nzStatus="processing"></nz-badge>
+                            <nz-badge *ngIf="item.auditStatus === 3" nzStatus="error"></nz-badge>
+                            <nz-badge *ngIf="item.auditStatus === 4" nzStatus="success"></nz-badge>
+                            {{ findKeyByValue(projectInfoService.auditStatus, item.auditStatus) }}
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                            -
+                        </ng-template>
+                    </td>
+                    <td>{{ item.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+                    <td class="table-action">
+                        <ng-container *ngIf="item.auditStatus === 1" [z-acl]="'Menus.Project.Project'">
+                            <i (click)="editProject(item)" title="编辑" nz-icon nzType="edit" nzTheme="outline"></i>
+                            <nz-divider nzType="vertical"></nz-divider>
+                        </ng-container>
+                        <i (click)="routeTo('detail', item)" title="查看详情" nz-icon nzType="eye" nzTheme="outline"></i>
+                        <ng-container [z-acl]="'Menus.Project.Project'">
+                            <nz-divider nzType="vertical"></nz-divider>
+                            <i (click)="removeProject(item)" title="删除" nz-icon nzType="delete" nzTheme="outline"></i>
+                        </ng-container>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+    <ng-template #bottomTemplate>
+        <div class="pager">
+            <nz-pagination [(nzPageIndex)]="pageInfo.nzPageIndex" [(nzPageSize)]="pageInfo.nzPageSize"
+                [(nzTotal)]="pageInfo.nzTotal" (nzPageIndexChange)="pageChange($event)" nzShowQuickJumper
+                [nzShowTotal]="totalTemplate"></nz-pagination>
+            <ng-template #totalTemplate let-total>
+                共{{pageInfo.nzTotal}}条
+            </ng-template>
+        </div>
+    </ng-template>
+    <!-- 搜索表单 -->
+    <ng-template #topTemplate>
+        <form nz-form [nzLayout]="'inline'" [formGroup]="validateSearchForm" (ngSubmit)="submitSearchForm()">
+            <div nz-row nzGutter="24">
+                <div nz-col nzMd="3">
+                    <nz-form-item>
+                        <!-- <nz-form-label>项目区域</nz-form-label> -->
+                        <nz-form-control>
+                            <nz-select style="width: 180px;" nzShowSearch formControlName="areaId" nzAllowClear
+                                nzPlaceHolder="项目区域" (ngModelChange)="submitSearchForm()">
+                                <nz-option *ngFor="let item of areaList" nzCustomContent nzValue="{{item.id}}"
+                                    nzLabel="{{item.code}} - {{item.name}}">
+                                    <span>{{item.code}} - {{item.name}}</span>
+                                </nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzMd="3">
+                    <nz-form-item>
+                        <!-- <nz-form-label>项目类型</nz-form-label> -->
+                        <nz-form-control>
+                            <nz-select style="width: 180px;" formControlName="type" nzAllowClear nzPlaceHolder="项目类型"
+                                (ngModelChange)="submitSearchForm()">
+                                <nz-option *ngFor="let item of projectInfoService.type" nzValue="{{item.value}}"
+                                    nzLabel="{{item.key}}">
+                                </nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzMd="3">
+                    <nz-form-item>
+                        <!-- <nz-form-label>施工阶段</nz-form-label> -->
+                        <nz-form-control>
+                            <nz-select style="width: 180px;" formControlName="stage" nzAllowClear nzPlaceHolder="施工阶段"
+                                (ngModelChange)="submitSearchForm()">
+                                <nz-option *ngFor="let item of projectInfoService.stage" nzValue="{{item.value}}"
+                                    nzLabel="{{item.key}}">
+                                </nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzMd="3">
+                    <nz-form-item>
+                        <!-- <nz-form-label>项目状态</nz-form-label> -->
+                        <nz-form-control>
+                            <nz-select style="width: 180px;" formControlName="projectStatus" nzAllowClear
+                                (ngModelChange)="submitSearchForm()" nzPlaceHolder="项目状态">
+                                <nz-option *ngFor="let item of projectInfoService.projectStatus"
+                                    nzValue="{{item.value}}" nzLabel="{{item.key}}">
+                                </nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzMd="3">
+                    <nz-form-item>
+                        <!-- <nz-form-label>审核状态</nz-form-label> -->
+                        <nz-form-control>
+                            <nz-select style="width: 180px;" formControlName="auditStatus" nzAllowClear
+                                (ngModelChange)="submitSearchForm()" nzPlaceHolder="审核状态">
+                                <nz-option *ngFor="let item of projectInfoService.auditStatus" nzValue="{{item.value}}"
+                                    nzLabel="{{item.key}}">
+                                </nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzMd="3">
+                    <nz-form-item>
+                        <!-- <nz-form-label>请输入关键字</nz-form-label> -->
+                        <nz-form-control>
+                            <input formControlName="filter" nz-input placeholder="请输入关键字" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzMd="3">
+                    <nz-form-item>
+                        <nz-form-control>
+                            <button nz-button class="" [nzType]="'primary'">搜索</button>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-control>
+                            <button *ngIf="apiPath === 'bim'" [z-acl]="'Menus.Project.Project'" nz-button
+                                (click)="editProject({})" [nzType]="'primary'">新增</button>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <!-- <div nz-col [nzSpan]="expandForm ? 24 : 4">
+                    <nz-form-item>
+                        <nz-form-control>
+                            <button nz-button class="" [nzType]="'primary'">搜索</button>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-control>
+                            <button nz-button (click)="editProject({})" [nzType]="'primary'">添加项目</button>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-control>
+                            <a (click)="expandForm = !expandForm">
+                                {{ expandForm ? '收起' : '展开' }}
+                                <i nz-icon [nzType]="expandForm ? 'up' : 'down'"></i>
+                            </a>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div> -->
+            </div>
+        </form>
+    </ng-template>
+</div>
+
+<!-- 新增编辑 -->
+<nz-modal [(nzVisible)]="isModalVisible" nzTitle="新增/编辑项目" (nzOnCancel)="cancelAddForm()" (nzOnOk)="submitAddForm()"
+    nzWidth="800">
+    <form nz-form [formGroup]="validateAddForm">
+        <div nz-row [nzGutter]="24">
+            <nz-form-item nz-col [nzSpan]="24">
+                <nz-form-label [nzSm]="3" [nzXs]="24" nzRequired>项目名称</nz-form-label>
+                <nz-form-control [nzSm]="19" [nzXs]="24" nzErrorTip="请输入项目名称">
+                    <input nz-input formControlName="name" maxlength="256" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>项目编号</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入项目编号">
+                    <input nz-input formControlName="code" maxlength="20" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24">项目区域</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入项目区域">
+                    <nz-select formControlName="areaId" nzShowSearch>
+                        <nz-option *ngFor="let item of areaList" nzCustomContent nzValue="{{item.id}}"
+                            nzLabel="{{item.code}} - {{item.name}}">
+                            <span>{{item.code}} - {{item.name}}</span>
+                        </nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24">项目类型</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入项目类型">
+                    <nz-select formControlName="type">
+                        <nz-option *ngFor="let item of projectInfoService.type" nzValue="{{item.value}}"
+                            nzLabel="{{item.key}}">
+                        </nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24">施工阶段</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入施工阶段">
+                    <nz-select formControlName="stage" [nzDisabled]="isStageDisabled">
+                        <nz-option *ngFor="let item of projectInfoService.stage" nzValue="{{item.value}}"
+                            nzLabel="{{item.key}}">
+                        </nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24">项目状态</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入项目状态">
+                    <nz-select formControlName="projectStatus" nzAllowClear>
+                        <nz-option *ngFor="let item of projectInfoService.projectStatus" nzValue="{{item.value}}"
+                            nzLabel="{{item.key}}">
+                        </nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24">工期</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                    <nz-input-group nzAddOnAfter="月">
+                        <!-- <input nz-input formControlName="takeLimit" /> -->
+                        <nz-input-number formControlName="takeLimit" [nzMin]="1" [nzMax]="9999999" [nzStep]="1">
+                        </nz-input-number>
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24">投资总额</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                    <nz-input-group nzAddOnAfter="万">
+                        <!-- <input nz-input formControlName="totalAmount" /> -->
+                        <nz-input-number formControlName="totalAmount" [nzPrecision]="2" [nzMin]="0.01"
+                            [nzMax]="9999999.99" [nzStep]="0.01"></nz-input-number>
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24">所属机构</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                    <input nz-input formControlName="organizationName" maxlength="50" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24">建设单位</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                    <input nz-input formControlName="companyName" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24">联系人</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                    <input nz-input formControlName="companyContacts" maxlength="50" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24">联系电话</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                    <input nz-input formControlName="companyPhoneNumber" maxlength="20" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24">联系地址</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                    <input nz-input formControlName="companyAddress" maxlength="100" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24">是否重点</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                    <nz-radio-group formControlName="isImportant">
+                        <label nz-radio nzValue="1">是</label>
+                        <label nz-radio nzValue="2">否</label>
+                    </nz-radio-group>
+                </nz-form-control>
+            </nz-form-item>
+            <!-- <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24">是否立项</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                    <nz-radio-group formControlName="isApprove">
+                        <label nz-radio nzValue="1">是</label>
+                        <label nz-radio nzValue="2">否</label>
+                    </nz-radio-group>
+                </nz-form-control>
+            </nz-form-item> -->
+            <nz-form-item nz-col [nzSpan]="12">
+                <nz-form-label [nzSm]="6" [nzXs]="24">是否关注</nz-form-label>
+                <nz-form-control [nzSm]="14" [nzXs]="24">
+                    <nz-radio-group formControlName="mark">
+                        <label nz-radio nzValue="1">是</label>
+                        <label nz-radio nzValue="2">否</label>
+                    </nz-radio-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col [nzSpan]="24">
+                <nz-form-label [nzSm]="3" [nzXs]="24">简介</nz-form-label>
+                <nz-form-control [nzSm]="19" [nzXs]="24" nzErrorTip="请输入简介">
+                    <textarea rows="4" nz-input formControlName="description" maxlength="500"></textarea>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+    </form>
+</nz-modal>

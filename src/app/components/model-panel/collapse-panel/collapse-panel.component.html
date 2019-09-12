@@ -1,0 +1,193 @@
+<div class="right-button" *ngIf='!rightShow  && !openEditstatus' (click)="rightOpen()">
+  <button nz-button nzType="primary" style="height: 80px;">
+    <i nz-icon type="double-left" theme="outline"></i>
+  </button>
+</div>
+<!-- 构件信息 -->
+<div class="component" *ngIf="(!( isSelectAcceptanceNode && !isRightCard) ) && (rightShow  && !openEditstatus)">
+  <!-- <div class="loading" *ngIf="loading"> -->
+  <!-- <nz-spin nzSimple  [nzSpinning]="loading" [nzSize]="'large'"> -->
+
+  <div nz-row class="component-head">
+    <!-- <div nz-col nzSpan=4>
+      <div class="spot"></div>
+    </div> -->
+    <div nz-col nzSpan=20 style="cursor: pointer;text-align: center;" [ngClass]="{'text-success': showStatus }"
+      (click)="switch('info')">
+      构件信息
+    </div>
+    <!-- <div nz-col nzSpan=10 style="cursor: pointer;text-align: center;" [ngClass]="{'text-success': !showStatus }"
+      (click)="switch('files')">
+      检验批文件
+    </div> -->
+    <div nz-col nzSpan=4 style="text-align: center;">
+      <i nz-icon type="close" theme="outline" class="close" (click)="closeRight()"></i>
+    </div>
+  </div>
+  <div class="component-body">
+    <!-- 默认构件信息 -->
+    <div nz-row *ngIf='componentShow && showStatus'>
+      <div nz-col nzSpan=12 *ngFor='let item of compentLists' class="list">
+        {{item}}
+      </div>
+    </div>
+    <!-- 有选中时构件信息 -->
+    <ng-container *ngIf='!componentShow && showStatus'>
+      <div nz-row *ngFor='let item of valueLists'>
+        <div nz-col nzSpan=12 class="list">
+          {{item.Name}}
+        </div>
+        <div nz-col nzSpan=12 class="list">
+          {{item.Value}}
+        </div>
+      </div>
+    </ng-container>
+    <!-- 默认检验批页面 -->
+    <div nz-row *ngIf='componentShow && !showStatus'>
+
+      <span>请选择一个构件查看对应检验批文件</span>
+
+    </div>
+    <!-- 检验批文件 -->
+    <ng-container *ngIf="!componentShow && !showStatus">
+      <nz-input-group [nzSuffix]="suffixIcon">
+        <input type="text" nz-input placeholder="搜索" [(ngModel)]="lotFileSearchValue">
+      </nz-input-group>
+      <ng-template #suffixIcon>
+        <i nz-icon type="search"></i>
+      </ng-template>
+      <nz-tree #treeCom [nzData]="lotFileList" (nzClick)="acceptanceFileClickEvent($event,true)" [nzSearchValue]="lotFileSearchValue"  (nzDblClick)="openFolder($event)"
+        nzShowIcon="true" (nzSearchValueChange)="nzEvent($event)" [nzTreeTemplate]="nzTreeTemplate" [nzHideUnMatched]="true" >
+        <ng-template #nzTreeTemplate let-node>
+          <span class="node-hidden" [title]="node.origin.title" >
+              <i
+              nz-icon
+              [type]="(node.isExpanded && !node.origin.fileId)?'folder-open-fill':node.icon"
+              (click)="openFolder(node)"
+            ></i>
+            {{node.origin.title}}
+          </span>
+        </ng-template>
+      </nz-tree>
+    </ng-container>
+  </div>
+  <!-- </nz-spin> -->
+  <!-- </div> -->
+</div>
+
+<!-- 验收资料 -->
+<div class="component" *ngIf="( isSelectAcceptanceNode && !isRightCard ) && (rightShow && !openEditstatus)">
+  <div nz-row class="component-head">
+    <div nz-col nzSpan=4>
+      <div class="spot"></div>
+    </div>
+    <div nz-col nzSpan=16>
+      验收资料
+    </div>
+    <div nz-col nzSpan=4>
+      <i nz-icon type="close" theme="outline" class="close" (click)="closeRight()"></i>
+    </div>
+  </div>
+  <div class="component-body" style="text-align: left">
+
+    <nz-input-group [nzSuffix]="suffixIcon">
+      <input type="text" nz-input placeholder="搜索" [(ngModel)]="acceptanceFileSearchValue">
+    </nz-input-group>
+    <ng-template #suffixIcon>
+      <i nz-icon type="search"></i>
+    </ng-template>
+    <nz-tree #treeCom [nzData]="acceptanceFilesLists" [nzSearchValue]="acceptanceFileSearchValue"
+      (nzDblClick)="openFolder($event)" (nzClick)="acceptanceFileClickEvent($event)" nzShowIcon="true"
+      (nzSearchValueChange)="nzEvent($event)" [nzTreeTemplate]="nzTreeTemplate" [nzHideUnMatched]="true">
+      <ng-template #nzTreeTemplate let-node>
+        <span class="node-hidden" [title]="node.origin.name">
+            <i
+            nz-icon
+            [type]="(node.isExpanded && !node.isLeaf)?'folder-open-fill':node.icon"
+            class="ant-tree-switcher-line-icon"
+            (click)="openFolder(node)"
+          ></i><span>{{node.origin.title}}</span>
+        </span>
+      </ng-template>
+    </nz-tree>
+
+  </div>
+</div>
+
+
+<!-- pdf预览 -->
+
+<nz-modal nzWidth='70%' [nzStyle]='viewStyle' [nzVisible]="isPDFView" [nzContent]="modalContent" [nzTitle]="viewTitle1"
+  [nzFooter]="null" nzKeyboard='false' [nzBodyStyle]="viewBodyStyle" (nzOnCancel)="isPDFView = !isPDFView">
+
+  <ng-template #viewTitle1>
+    {{viewTitle}}
+  </ng-template>
+  <ng-template #modalContent>
+    <div class="pdfContent zzj-scrollbar">
+      <iframe id="pdf" [src]="pdfSrc" class="preview-iframe zzj-scrollbar"></iframe>
+      <button nz-button nzType="link" class="left" title="{{pdfListUnderSameFolder.preTitle}}" (click)='previousPdf()'
+        [disabled]="pdfListUnderSameFolder.preDisabled"> <i nz-icon nzType="left" nzTheme="outline"></i> </button>
+      <button nz-button nzType="link" class="right" title="{{pdfListUnderSameFolder.nextTitle}}" (click)='nextPdf()'
+        [disabled]="pdfListUnderSameFolder.nextDisabled"> <i nz-icon nzType="right" nzTheme="outline"></i> </button>
+      <span class="full" title="全屏" (click)="pdfGoFull()"> <i nz-icon nzType="fullscreen" nzTheme="outline"></i> </span>
+      <!-- <span class="unfull" (click)="closefullscreen()">
+        <i nz-icon nzType="fullscreen-exit" nzTheme="outline"></i>
+      </span> -->
+    </div>
+
+
+  </ng-template>
+</nz-modal>
+
+<!-- 构件操作框 -->
+<div class="control" [ngStyle]="controlModelStyle" *ngIf="isShowControlModel">
+  <div (click)="modefiyUUID(1)">去除选中项</div>
+  <div (click)="modefiyUUID(2)">将选中项移至</div>
+  <div (click)="modefiyUUID(3)">将选中项加入</div>
+</div>
+
+
+
+<!-- 构件绑定关系移动框 -->
+
+<nz-modal nzWidth='50%' [nzVisible]="isMoveUUID" [nzContent]="MovemodalContent" [nzTitle]="MoveTitle1"
+  [nzFooter]="MovemodalFoot" nzKeyboard='false' (nzOnCancel)="isMoveUUID = !isMoveUUID">
+
+  <ng-template #MoveTitle1>
+    移至检验批
+  </ng-template>
+  <ng-template #MovemodalContent>
+    <div class="card" *ngIf="openEditstatus">
+
+      <nz-input-group [nzSuffix]="suffixIcon">
+        <input type="text" nz-input placeholder="搜索" [(ngModel)]="searchValue">
+      </nz-input-group>
+      <ng-template #suffixIcon>
+        <i nz-icon type="search"></i>
+      </ng-template>
+
+      <nz-tree #treeCom [nzData]="acceptanceNodes" [nzSearchValue]="searchValue" nzShowIcon="true"
+        [nzTreeTemplate]="nzTreeTemplate">
+        <ng-template #nzTreeTemplate let-node  >
+          <div [id]="node.key" style="display: inline-block;width: 90%;" class="acceptanceNode"
+            [class.active]="targetNodeForMove?.key===node.key">
+            <span class=" title hidden" [title]="node.origin.title" (click)="nodesClickEvent(node)">
+              <i nz-icon [type]="node.isExpanded?'folder-open-fill':node.icon" class="ant-tree-switcher-line-icon"
+                (click)="openFolder(node)"></i>
+              {{node.origin.title}}
+            </span>
+            <span class="bindCss" *ngIf="node.origin.isLeaf && node.origin.propertyIds.length !=0">
+              <i nz-icon nzType="link" nzTheme="outline"></i>
+            </span>
+          </div>
+        </ng-template>
+      </nz-tree>
+
+    </div>
+  </ng-template>
+
+  <ng-template #MovemodalFoot>
+    <button nz-button nzType="primary" (click)="moveUUid()"> 提交</button>
+  </ng-template>
+</nz-modal>

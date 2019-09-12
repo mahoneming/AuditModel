@@ -1,0 +1,72 @@
+<div class="major-manage page-container">
+    <!-- 顶部搜索条件 -->
+    <!-- 表格 -->
+    <nz-card [nzTitle]="topTemplate" [nzActions]="[bottomTemplate]">
+        <nz-table #rowSelectionTable nzSize="middle" [nzData]="tableList" [nzShowPagination]="false"
+            (nzCurrentPageDataChange)="currentPageDataChange($event)">
+            <thead>
+                <tr>
+                    <th nzShowCheckbox [(nzChecked)]="isAllDisplayDataChecked" [nzIndeterminate]="isIndeterminate"
+                        (nzCheckedChange)="checkAll($event)"></th>
+                    <th>名称</th>
+                    <th>状态</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of rowSelectionTable.data">
+                    <td nzShowCheckbox [(nzChecked)]="mapOfCheckedId[data.id]" (nzCheckedChange)="refreshStatus()"></td>
+                    <td>{{ data.name }}</td>                    
+                    <td>{{ data.status === 1 ? '启用' : '禁用' }}</td>
+                    <td>{{ data.creationTime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+                    <td class="table-action">
+                        <i (click)="editMarjor(data)" title="编辑" nz-icon nzType="edit" nzTheme="outline"></i>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <i (click)="removeMarjor(data)" title="删除" nz-icon nzType="delete" nzTheme="outline"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-card>
+    <ng-template #topTemplate>
+        <div class="major-manage-tool">
+            <nz-input-group nzSearch nzSize="middle" [nzAddOnAfter]="suffixButton">
+                <input type="text" [(ngModel)]="listForm.Filter" nz-input placeholder="请输入关键字" />
+            </nz-input-group>
+            <ng-template #suffixButton>
+                <button (click)="searchItem()" nz-button nzType="primary" nzSize="middle" nzSearch>搜索</button>
+            </ng-template>
+            <button (click)="isAddVisible=true" nz-button nzType="primary" style="margin-left: 20px;">新增</button>
+        </div>
+    </ng-template>
+    <ng-template #bottomTemplate>
+        <div class="pager">
+            <nz-pagination [(nzPageIndex)]="pageIndex" [(nzPageSize)]="listForm.MaxResultCount" [(nzTotal)]="listForm.nzTotal"
+                (nzPageIndexChange)="pageChange($event)" nzShowQuickJumper [nzShowTotal]="totalTemplate">
+            </nz-pagination>
+            <ng-template #totalTemplate let-total>
+                共{{listForm.nzTotal}}条
+            </ng-template>
+        </div>
+    </ng-template>
+</div>
+
+<nz-modal [(nzVisible)]="isAddVisible" nzTitle="新增/编辑专业" (nzOnCancel)="resetForm()" (nzOnOk)="submitForm()">
+    <form nz-form [formGroup]="validateForm">
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>名称</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请输入名称">
+                <input formControlName="name" maxlength="50" nz-input placeholder="" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>状态</nz-form-label>
+            <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="请选择状态">
+                <nz-radio-group formControlName="status">
+                    <label *ngFor="let item of status" nz-radio nzValue="{{item.value}}">{{item.name}}</label>
+                </nz-radio-group>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</nz-modal>

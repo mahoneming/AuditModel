@@ -1,0 +1,9 @@
+.project-review-list {
+  ::ng-deep .ant-card {
+    height: 100%;
+    overflow: auto;
+    .ant-card-body {
+      height: calc(100% - 129px);
+    }
+  }
+}

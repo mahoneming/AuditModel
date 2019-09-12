@@ -1,0 +1,332 @@
+.component {
+  min-width: 300px;
+  height: 85vh;
+  background-color: white;
+  box-shadow: 0px 0px 8px #ddd;
+  border-radius: 5px;
+  opacity: 0.9;
+
+  .component-head {
+    height: 50px;
+    line-height: 50px;
+    border-bottom: 1px solid #dddddd;
+
+    .spot {
+      width: 10px;
+      height: 10px;
+      border-radius: 5px;
+      background-color: #409fe5;
+      margin: 20px auto;
+    }
+
+    .close {
+      cursor: pointer;
+
+      &:hover {
+        color: red;
+      }
+    }
+  }
+
+  .component-body {
+    padding: 10px;
+    //text-align: center;
+    max-width: 300px;
+    max-height: 400px;
+    overflow: auto;
+    margin-top: 1px;
+
+    .list {
+      margin-top: 10px;
+    }
+
+    .node-hidden {
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 250px;
+      margin-left: 3%;
+      cursor: pointer;
+      i{
+        margin-right: 2%;
+      }
+    }
+  }
+}
+
+.drawings {
+  width: 500px;
+  height: 300px;
+  background-color: white;
+  box-shadow: 0px 0px 8px #ddd;
+  border-radius: 5px;
+  opacity: 0.9;
+
+  .drawings-head {
+    height: 50px;
+    line-height: 50px;
+
+    .close {
+      cursor: pointer;
+
+      &:hover {
+        color: red;
+      }
+    }
+  }
+
+  .drawings-body {
+    height: 200px;
+    width: 500px;
+    padding: 0px 50px;
+
+    .img {
+      width: 100%;
+      height: 100%;
+      // background-image: url('./../../../../assets/images/project/sdf.png');
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+    }
+  }
+
+  .drawings-bottom {
+    height: 50px;
+    padding: 10px 20px;
+  }
+}
+
+.drawingsImg {
+  height: 500px;
+  // background-image: url('./../../../../assets/images/project/sdf.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+::-webkit-scrollbar-track-piece {
+  background-color: #f8f8f8;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #dddddd;
+  background-clip: padding-box;
+  min-height: 28px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #bbb;
+}
+
+::ng-deep .ant-modal-footer {
+  // text-align: center;
+}
+
+.zzj-scrollbar {
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 6px;
+    overflow: hidden;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #acacac;
+  }
+}
+
+// 验收资料搜索框
+.anticon-close-circle {
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.3s;
+  font-size: 12px;
+}
+
+.anticon-close-circle:hover {
+  color: #999;
+}
+
+.anticon-close-circle:active {
+  color: #666;
+}
+
+// 树图标
+:host ::ng-deep .ant-tree li span.ant-tree-iconEle,
+.ant-tree li span.ant-tree-switcher {
+  vertical-align: unset;
+}
+
+:host ::ng-deep .ant-tree li span.ant-tree-switcher,
+.ant-tree li span.ant-tree-iconEle {
+  width: 10px;
+  vertical-align: 10%;
+}
+
+// 选项卡下划线
+.text-success {
+  color: #409fe5;
+  border-bottom: 1px solid #409fe5;
+}
+
+
+// pdf预览样式
+.pdfContent {
+  width: 100%;
+  height: 100%;
+
+  .preview-iframe {
+    width: 100%;
+    height: 100%;
+  }
+
+  .full {
+    position: absolute;
+    left: 70px;
+    bottom: 73px;
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 16px;
+    color: #757272;
+    line-height: 36px;
+    background-color: rgb(242, 242, 242);
+    cursor: pointer;
+    box-shadow: 0px 2px 0px #ddd;
+  }
+
+  .left {
+    position: absolute;
+    left: 40px;
+    bottom: 50%;
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 16px;
+    color: #757272;
+    line-height: 36px;
+    background-color: rgb(242, 242, 242);
+    box-shadow: 0px 2px 0px #ddd;
+  }
+
+  .right {
+    position: absolute;
+    right: 40px;
+    bottom: 50%;
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 16px;
+    color: #757272;
+    line-height: 36px;
+    background-color: rgb(242, 242, 242);
+    box-shadow: 0px 2px 0px #ddd;
+  }
+
+
+
+}
+
+.zzj-scrollbar {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    overflow: hidden;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #acacac;
+  }
+}
+
+// 弹出操作框
+.control {
+  transition: all .1s;
+  border-radius: 4px;
+  text-align: center;
+  color: #f8f8f8;
+  position: fixed;
+  width: 130px;
+  font-size: 12px;
+
+  background-color: rgba(65, 63, 63, 0.493);
+  z-index: 1001;
+
+  div {
+    line-height: 30px;
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(46, 45, 45, 0.685)
+    }
+  }
+}
+
+.loading{
+  position: absolute;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 2099;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  text-align: center;
+  .content{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      width: 100%;
+  }
+  // p{
+  //     position: relative;
+  //     top: 30px;
+  //     color: #fff;
+  // }
+}
+
+.acceptanceNode {
+  box-sizing: border-box;
+  padding: 0 4px;
+  // position: relative;
+
+  .folder-tools {
+    float: right;
+    line-height: 26px;
+    opacity: 0;
+  }
+  .title{
+    // vertical-align: middle;
+    cursor: pointer;
+  }
+
+  &.active,
+  &:hover {
+    background: #dfeffb;
+    .folder-tools {
+      opacity: 1;
+    }
+  }
+  .bindCss{
+    display: inline-block;
+    // position: absolute;
+    // left: 212px;
+  }
+}

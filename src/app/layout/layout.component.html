@@ -1,0 +1,70 @@
+<div class="layout-container">
+  <!-- 顶部导航栏 -->
+  <div class="layout-layout" [ngClass]="{'layout-layout-audit': apiPath === 'audit'}">
+    <div *ngIf="apiPath === 'bim'" class="layout-left">BIM项目管理平台</div>
+    <div *ngIf="apiPath === 'audit'" class="layout-left layout-left-audit">BIM施工应用模型审查系统</div>
+    <div class="layout-right">
+      <!-- <h2 routerLink="/outer/dashboard" nz-icon class="layout-right-home" type="home" title="首页"></h2> -->
+      <div class="img" [ngStyle]="imgStyle"></div>
+      <nz-dropdown>
+        <a nz-dropdown>
+          {{ userName }}
+          <i nz-icon type="down"></i>
+        </a>
+        <ul nz-menu>
+          <li nz-menu-item>
+            <a (click)="personal()">个人信息</a>
+          </li>
+          <li nz-menu-item>
+            <a (click)="password()">修改密码</a>
+          </li>
+          <li nz-menu-item (click)="signout()">
+            <a>退出</a>
+          </li>
+        </ul>
+      </nz-dropdown>
+    </div>
+  </div>
+  <div class="dash-center" [ngClass]="{'dash-center-audit': apiPath === 'audit'}">
+    <!-- 左侧菜单栏 -->
+    <nz-layout style="height: 100%">
+      <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="false" [nzWidth]=200 style="overflow: auto">
+        <ul class="zzj-scrollbar" nz-menu [nzMode]="'inline'" [nzTheme]='nzTheme' [nzInlineCollapsed]="isCollapsed"
+          style="height: 100%;overflow-y: auto;overflow-x: hidden;">
+          <div class="center-pause" (click)="toggleCollapsed()">
+            <i nz-icon [type]="isCollapsed?'menu-unfold':'menu-fold'"></i>
+          </div>
+          <!-- <li nz-menu-item (click)="comeBack()" *ngIf='backShow'>
+              <span>
+                <i nz-icon type="bars" theme="outline"></i>
+                <span class="nav-text">项目列表</span>
+              </span>
+            </li> -->
+          <nz-skeleton [nzActive]="true" [nzLoading]="isSpinning">
+            <ng-container *ngFor="let menu of menuList;let menuIndex = index">
+              <li [nzOpen]="menu.isOpen" *ngIf="menu.isShow" nz-submenu>
+                <span title>
+                  <i nz-icon [type]="menu.icon"></i>
+                  <span>{{menu.name}}</span>
+                </span>
+                <ul *ngFor="let subMenu of menu.items;let subMenuIndex = index">
+                  <li *ngIf="subMenu.isShow" (click)="routerTo(subMenu.route)" nz-menu-item
+                    [nzSelected]="subMenu.isCheck">{{subMenu.name}}
+                  </li>
+                </ul>
+              </li>
+            </ng-container>
+          </nz-skeleton>
+        </ul>
+        <div class="copyright" [ngClass]="{'copyright-audit': apiPath === 'audit'}">© 2019 BIM Copyright</div>
+      </nz-sider>
+      <!-- 右侧信息栏 -->
+      <div class="layout-content">
+        <div class="layout-box">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </nz-layout>
+  </div>
+
+</div>

@@ -1,0 +1,6 @@
+{
+    "extends": "@zzj/tslint",
+    "rules": {
+        "semicolon": false
+    }
+}

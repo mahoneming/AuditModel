@@ -1,0 +1,164 @@
+<div class="project-scenes page-container">
+    <nz-card [nzActions]="[bottomTemplate]" class="project-scenes-card-container">
+        <div class="project-scenes-tools">
+            <nz-input-group nzSearch nzSize="middle" [nzAddOnAfter]="suffixButton" style="width: 300px">
+                <input [(ngModel)]="listForm.filter" type="text" nz-input placeholder="请输入关键字" />
+            </nz-input-group>
+            <ng-template #suffixButton>
+                <button (click)="search()" nz-button nzType="primary" nzSize="middle" nzSearch>搜索</button>
+            </ng-template>
+            <button *ngIf="apiPath === 'bim'" [z-acl]="'Menus.Project.ModelGroup'" nz-button nzType="primary"
+                (click)="addModelGroup()" style="margin-left: 20px">新增</button>
+        </div>
+        <div class="project-scenes-list">
+            <div nz-row nzGutter="16">
+                <div *ngFor="let item of groupList" nz-col class="card-item" nzSpan="6">
+                    <nz-card nzHoverable [nzCover]="coverTemplate" (click)="routeToModel(item)" [nzActions]="item.type === 1 ?
+                        [reviewModel, actionModel, actionEdit, actionDelete] :
+                        auditStatus === '1' ?
+                        [actionModel, actionEdit, actionDelete] :
+                        [actionModel, actionDelete]">
+                        <div class="card-item-name">{{item.name}}</div>
+                        <div class="card-item-user">创建人：{{item.creatorUserName}}</div>
+                        <div class="card-item-time">时间：{{item.creationTime | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+                    </nz-card>
+                    <!-- <nz-card *ngIf="item.type !== 1" nzHoverable [nzCover]="coverTemplate" (click)="routeToModel(item)"
+                        [nzActions]="[actionModel, actionEdit, actionDelete]">
+                        <div class="card-item-name">{{item.name}}</div>
+                        <div class="card-item-user">创建人：{{item.creatorUserName}}</div>
+                        <div class="card-item-time">时间：{{item.creationTime | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+                    </nz-card> -->
+                    <ng-template #reviewModel>
+                        <i (click)="getReviewInfo(item)" title="查看专家评语" nz-icon nzType="audit" nzTheme="outline"></i>
+                    </ng-template>
+                    <ng-template #actionModel>
+                        <i (click)="showModelList(item)" nz-icon nzType="unordered-list" title="模型管理"
+                            nzTheme="outline"></i>
+                    </ng-template>
+                    <ng-template #actionEdit>
+                        <i [z-acl]="'Menus.Project.ModelGroup'" (click)="editModelGroup(item)" title="编辑场景" nz-icon
+                            nzType="edit" nzTheme="outline"></i>
+                    </ng-template>
+                    <ng-template #actionDelete>
+                        <i [z-acl]="'Menus.Project.ModelGroup'" (click)="removeProject(item)" title="删除场景" nz-icon
+                            nzType="delete" nzTheme="outline"></i>
+                    </ng-template>
+                    <ng-template #coverTemplate>
+                        <img *ngIf="!item.imageUrl" alt="example" src="../../../../assets/images/common/timg.jpg" />
+                        <img *ngIf="item.imageUrl" [src]="item.imageUrl" alt="">
+                    </ng-template>
+                </div>
+                <nz-empty *ngIf="groupList.length === 0"></nz-empty>
+            </div>
+        </div>
+    </nz-card>
+    <ng-template #bottomTemplate>
+        <div class="pager">
+            <nz-pagination [nzPageSize]="listForm.maxResultCount" [nzTotal]="listForm.nzTotal"
+                (nzPageIndexChange)="pageChange($event)" nzShowQuickJumper [nzShowTotal]="totalTemplate">
+            </nz-pagination>
+            <ng-template #totalTemplate let-total>
+                共{{listForm.nzTotal}}条
+            </ng-template>
+        </div>
+    </ng-template>
+</div>
+
+<!-- 新增场景 -->
+<nz-modal [(nzVisible)]="isAddGroupVisible" class="modal-group-add" nzTitle="新增/编辑场景"
+    (nzOnCancel)="isAddGroupVisible=false" (nzOnOk)="handleAddGroupOk()">
+    <div nz-row class="modal">
+        <div nz-col nzSpan=4 class="modal-left">
+            场景名称
+        </div>
+        <div nz-col nzSpan=20>
+            <input maxlength="50" nz-input placeholder="场景名称" style="width: 300px;" [(ngModel)]="groupModelName">
+            <span style="color: red;margin-left: 5px">*</span>
+        </div>
+    </div>
+    <div nz-row class="modal-text">
+        <div nz-col nzSpan=4 class="modal-left">
+            场景封面
+        </div>
+        <div nz-col nzSpan=20>
+            <div class="upload" (click)="uploadImg.click()" *ngIf='imgShow'>
+                <div class="top">
+                    <i nz-icon type="plus" theme="outline"></i>
+                </div>
+                <div class="bottom">
+                    <span>上传图片</span>
+                </div>
+            </div>
+            <div class="upload" [ngStyle]="imgStyle" *ngIf='!imgShow' (click)="uploadImg.click()"></div>
+            <input type="file" class="input-file" (change)="fileImgChange($event)" #uploadImg>
+            <nag-file-uploader style="display: none" [autoUpload]="true" [flowFiles]="imgQueue" [multiple]="false"
+                (onSuccess)="imgSuccess($event)" [fileHost]="FILEURL" #imageUploader></nag-file-uploader>
+        </div>
+    </div>
+</nz-modal>
+
+<!-- 模型组管理 -->
+<nz-modal [(nzVisible)]="isModelVisible" nzTitle="模型列表" (nzOnCancel)="isModelVisible=false" nzWidth="1000"
+    (nzOnOk)="goanalysisModel($event)">
+    <button [z-acl]="'Menus.Project.Model'" nz-button nzType="primary" (click)="uploadModel.click()"
+        style="margin-bottom: 20px;">上传模型
+    </button>
+    <!-- <span style="color: red;margin-left: 5px;" *ngIf="modelShow">*</span> -->
+    <input type="file" class="input-file" (change)="fileModelChange($event)" [accept]="modelType" #uploadModel>
+    <nag-file-uploader [ngStyle]="modelStyle" style="margin-bottom: 20px;" [autoUpload]="true" [flowFiles]="modelQueue"
+        [multiple]="false" (onSuccess)="modelSuccess($event)" [fileHost]="FILEURL" (onRemove)="reModel()"
+        #modelUploader>
+    </nag-file-uploader>
+    <div class="model-list-table-container zzj-scrollbar" style="height: 400px;overflow:auto">
+        <nz-table #basicTable [nzData]="modelLists" nzBordered [nzShowPagination]="false">
+            <thead>
+                <tr>
+                    <th nzWidth="20%">模型名称</th>
+                    <th nzWidth="20%">上传人</th>
+                    <th nzWidth="20%">上传时间</th>
+                    <th nzWidth="20%">文件大小</th>
+                    <th nzWidth="20%">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor='let item of modelLists'>
+                    <td>{{item.fileName}}</td>
+                    <td>{{item.creatorUserName}}</td>
+                    <td>{{item.creationTime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                    <td>{{item.size|size}}M</td>
+                    <td class="table-action">
+                        <i [z-acl]="'Menus.Project.Model'" nz-icon type="delete" theme="outline" class="deletemodle" [ngStyle]='item.iconStyle'
+                            (click)="deleteModel(item)"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</nz-modal>
+
+<!-- 查看专家评语 -->
+<nz-modal class="model-review-list" [(nzVisible)]="isReviewListVisible" nzTitle="查看专家评语"
+    (nzOnCancel)="isReviewListVisible=false" nzWidth="800" [nzFooter]="null">
+    <nz-table #basicTable [nzData]="reviewListData">
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>专业</th>
+                <th>岗位</th>
+                <th>结果</th>
+                <th>评语</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of reviewListData">
+                <td>{{ data.name }}</td>
+                <td>{{ data.majorName || '-' }}</td>
+                <td>{{ data.positionName || '-' }}</td>
+                <td>{{ data.status === 1 ? '通过' : data.status === 2 ? '未通过' : data.status === 3 ? '超时' : '-' }}</td>
+                <td title="{{data.descr}}">
+                    <div class="overflow">{{ data.descr }}</div>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+</nz-modal>

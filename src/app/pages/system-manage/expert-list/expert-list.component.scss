@@ -1,0 +1,11 @@
+.expert-list {
+  .expert-list-tool {
+    width: 300px;
+  }
+  ::ng-deep .ant-card {
+    height: 100%;
+    .ant-card-body {
+      height: calc(100% - 121px);
+    }
+  }
+}

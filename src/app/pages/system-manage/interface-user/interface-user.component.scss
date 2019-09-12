@@ -1,0 +1,19 @@
+@import "../../../sass/base.scss";
+
+.interface-user {
+  .user-manage-search {
+    background-color: #fff;
+    box-shadow: $BoxShadow;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  .user-manage-tool {
+    width: 300px;
+  }
+  ::ng-deep .ant-card {
+    height: 100%;
+    .ant-card-body {
+      height: calc(100% - 121px);
+    }
+  }
+}
